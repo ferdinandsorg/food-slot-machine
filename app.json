@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "Food Slot",
+    "slug": "uppercasef",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "foodslot",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "org.ferdinands.foodslot",
+      "infoPlist": {
+        "NSMotionUsageDescription": "Food Slot nutzt Bewegungsdaten, damit du die Slots mit einem Vorwärtsschub starten kannst."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1A2E24",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#0F1A14"
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Food Slot nutzt Bewegungsdaten, damit du die Slots mit einem Vorwärtsschub starten kannst."
+        }
+      ],
+      "expo-font",
+      "expo-web-browser",
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "fe3143b8-6063-430d-a532-e7f81f646f08"
+      }
+    },
+    "owner": "uppercasefs-team"
+  }
+}
