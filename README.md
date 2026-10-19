@@ -70,7 +70,7 @@ Läuft Expo z. B. in der Cloud oder in einem anderen Netz:
 npm run start:tunnel
 ```
 
-Nutzt einen **ngrok**-Tunnel (`@expo/ngrok`). Expo Go verbindet sich darüber — etwas langsamer als LAN, aber netzunabhängig.
+Nutzt einen Expo-/ngrok-Tunnel. Expo Go verbindet sich darüber — etwas langsamer als LAN, aber netzunabhängig.
 
 > **Hinweis Cloud-Agent:** Diese Remote-Umgebung ist *nicht* in deinem Heim-WLAN. Für „gleiches WLAN“ Expo bitte lokal auf deinem Mac starten (`npm start`). Tunnel nur, wenn du aus der Cloud/dem anderen Netz testen willst.
 

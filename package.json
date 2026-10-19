@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo/ngrok": "^4.1.3",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "babel-preset-expo": "~54.0.10",
     "expo": "~54.0.0",
     "expo-constants": "~18.0.14",
     "expo-font": "~14.0.12",
@@ -32,12 +33,12 @@
   "scripts": {
     "start": "expo start --lan",
     "start:lan": "expo start --lan",
-    "start:tunnel": "expo start --tunnel ngrok",
+    "start:tunnel": "expo start --tunnel",
     "start:localhost": "expo start --localhost",
     "android": "expo start --android --lan",
     "ios": "expo start --ios --lan",
     "web": "expo start --web --lan",
-    "web:tunnel": "expo start --web --tunnel ngrok",
+    "web:tunnel": "expo start --web --tunnel",
     "typecheck": "tsc --noEmit",
     "test:spin": "tsx src/features/spin/selectFoods.test.ts",
     "data:foods": "tsx scripts/csv-to-json.ts"
