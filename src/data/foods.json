@@ -1,0 +1,291 @@
+[
+  {
+    "id": "potato",
+    "name": "Kartoffeln",
+    "category": "carbs",
+    "imageKey": "potato",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "rice",
+    "name": "Reis",
+    "category": "carbs",
+    "imageKey": "rice",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "oats",
+    "name": "Haferflocken",
+    "category": "carbs",
+    "imageKey": "oats",
+    "tags": [
+      "vegan",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "whole_wheat_pasta",
+    "name": "Vollkornnudeln",
+    "category": "carbs",
+    "imageKey": "whole_wheat_pasta",
+    "tags": [
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "couscous",
+    "name": "Couscous",
+    "category": "carbs",
+    "imageKey": "couscous",
+    "tags": [
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "quinoa",
+    "name": "Quinoa",
+    "category": "carbs",
+    "imageKey": "quinoa",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "sweet_potato",
+    "name": "Süßkartoffel",
+    "category": "carbs",
+    "imageKey": "sweet_potato",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "polenta",
+    "name": "Polenta",
+    "category": "carbs",
+    "imageKey": "polenta",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "lentils",
+    "name": "Linsen",
+    "category": "protein",
+    "imageKey": "lentils",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "chickpeas",
+    "name": "Kichererbsen",
+    "category": "protein",
+    "imageKey": "chickpeas",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "beans",
+    "name": "Bohnen",
+    "category": "protein",
+    "imageKey": "beans",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "tofu",
+    "name": "Tofu",
+    "category": "protein",
+    "imageKey": "tofu",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "tempeh",
+    "name": "Tempeh",
+    "category": "protein",
+    "imageKey": "tempeh",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "eggs",
+    "name": "Eier",
+    "category": "protein",
+    "imageKey": "eggs",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "quark",
+    "name": "Quark",
+    "category": "protein",
+    "imageKey": "quark",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "edamame",
+    "name": "Edamame",
+    "category": "protein",
+    "imageKey": "edamame",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "broccoli",
+    "name": "Brokkoli",
+    "category": "veg",
+    "imageKey": "broccoli",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "bell_pepper",
+    "name": "Paprika",
+    "category": "veg",
+    "imageKey": "bell_pepper",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "carrots",
+    "name": "Karotten",
+    "category": "veg",
+    "imageKey": "carrots",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "spinach",
+    "name": "Spinat",
+    "category": "veg",
+    "imageKey": "spinach",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "peas",
+    "name": "Erbsen",
+    "category": "veg",
+    "imageKey": "peas",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "zucchini",
+    "name": "Zucchini",
+    "category": "veg",
+    "imageKey": "zucchini",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "cauliflower",
+    "name": "Blumenkohl",
+    "category": "veg",
+    "imageKey": "cauliflower",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "lambs_lettuce",
+    "name": "Feldsalat",
+    "category": "veg",
+    "imageKey": "lambs_lettuce",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  }
+]
