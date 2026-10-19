@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Food Slot",
-    "slug": "food-slot-machine",
+    "slug": "uppercasef",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -50,6 +50,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "fe3143b8-6063-430d-a532-e7f81f646f08"
+      }
+    },
+    "owner": "uppercasefs-team"
   }
 }
