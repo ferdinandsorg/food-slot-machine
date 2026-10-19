@@ -1,5 +1,5 @@
-import { DeviceMotion, type DeviceMotionMeasurement } from 'expo-sensors';
 import { useEffect, useRef } from 'react';
+import { Platform } from 'react-native';
 
 import {
   FORWARD_AXIS_DOMINANCE,
@@ -42,6 +42,7 @@ function isForwardThrust(x: number, y: number, z: number): boolean {
 /**
  * Detects a deliberate forward phone thrust using DeviceMotion user-acceleration.
  * Always pair with a button fallback for accessibility and simulator use.
+ * No-ops on web — expo-sensors is native-only.
  */
 export function useForwardThrust({ enabled, onThrust, onSample }: Options): void {
   const onThrustRef = useRef(onThrust);
@@ -57,7 +58,7 @@ export function useForwardThrust({ enabled, onThrust, onSample }: Options): void
   }, [onSample]);
 
   useEffect(() => {
-    if (!enabled) {
+    if (!enabled || Platform.OS === 'web') {
       return;
     }
 
@@ -65,40 +66,50 @@ export function useForwardThrust({ enabled, onThrust, onSample }: Options): void
     let cancelled = false;
 
     async function start() {
-      const available = await DeviceMotion.isAvailableAsync();
-      if (!available || cancelled) {
-        return;
+      try {
+        // Dynamic import keeps the native module off the web critical path.
+        const { DeviceMotion } = await import('expo-sensors');
+        if (cancelled) {
+          return;
+        }
+
+        const available = await DeviceMotion.isAvailableAsync();
+        if (!available || cancelled) {
+          return;
+        }
+
+        const permission = await DeviceMotion.requestPermissionsAsync();
+        if (!permission.granted || cancelled) {
+          return;
+        }
+
+        DeviceMotion.setUpdateInterval(MOTION_UPDATE_INTERVAL_MS);
+        subscription = DeviceMotion.addListener((data) => {
+          const accel = data.acceleration;
+          if (!accel) {
+            return;
+          }
+
+          const { x, y, z } = accel;
+          const magnitude = Math.sqrt(x * x + y * y + z * z);
+          const triggered = isForwardThrust(x, y, z);
+          onSampleRef.current?.({ x, y, z, magnitude, triggered });
+
+          if (!triggered) {
+            return;
+          }
+
+          const now = Date.now();
+          if (now - lastTriggerRef.current < MOTION_COOLDOWN_MS) {
+            return;
+          }
+
+          lastTriggerRef.current = now;
+          onThrustRef.current();
+        });
+      } catch {
+        // Sensor unavailable — button fallback remains.
       }
-
-      const permission = await DeviceMotion.requestPermissionsAsync();
-      if (!permission.granted || cancelled) {
-        return;
-      }
-
-      DeviceMotion.setUpdateInterval(MOTION_UPDATE_INTERVAL_MS);
-      subscription = DeviceMotion.addListener((data: DeviceMotionMeasurement) => {
-        const accel = data.acceleration;
-        if (!accel) {
-          return;
-        }
-
-        const { x, y, z } = accel;
-        const magnitude = Math.sqrt(x * x + y * y + z * z);
-        const triggered = isForwardThrust(x, y, z);
-        onSampleRef.current?.({ x, y, z, magnitude, triggered });
-
-        if (!triggered) {
-          return;
-        }
-
-        const now = Date.now();
-        if (now - lastTriggerRef.current < MOTION_COOLDOWN_MS) {
-          return;
-        }
-
-        lastTriggerRef.current = now;
-        onThrustRef.current();
-      });
     }
 
     start();

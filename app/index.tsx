@@ -1,6 +1,7 @@
-import { Link, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -43,7 +44,7 @@ export default function HomeScreen() {
   }, [spinAll, spinning]);
 
   useForwardThrust({
-    enabled: motionEnabled && !spinning,
+    enabled: Platform.OS !== 'web' && motionEnabled && !spinning,
     onThrust,
   });
 
@@ -66,14 +67,13 @@ export default function HomeScreen() {
               Drei Zutaten. Eine Mahlzeit. Überrasch dich.
             </Text>
           </View>
-          <Link href="/settings" asChild>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Einstellungen"
-              style={styles.iconButton}>
-              <Text style={styles.iconButtonText}>⚙</Text>
-            </Pressable>
-          </Link>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Einstellungen"
+            onPress={() => router.push('/settings')}
+            style={styles.iconButton}>
+            <Text style={styles.iconButtonText}>⚙</Text>
+          </Pressable>
         </View>
 
         <View style={styles.machine}>

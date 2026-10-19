@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import { AppBackground } from '@/src/components/AppBackground';
 import {
@@ -15,6 +15,7 @@ import { colors, radii, spacing, typography } from '@/src/theme/tokens';
 export default function MotionDebugScreen() {
   const [sample, setSample] = useState<MotionDebugSample | null>(null);
   const [hits, setHits] = useState(0);
+  const motionSupported = Platform.OS !== 'web';
 
   const onSample = useCallback((next: MotionDebugSample) => {
     setSample(next);
@@ -25,7 +26,7 @@ export default function MotionDebugScreen() {
   }, []);
 
   useForwardThrust({
-    enabled: true,
+    enabled: motionSupported,
     onThrust,
     onSample,
   });
@@ -35,7 +36,9 @@ export default function MotionDebugScreen() {
       <View style={styles.container}>
         <Text style={styles.heading}>DeviceMotion</Text>
         <Text style={styles.meta}>
-          Threshold {MOTION_THRESHOLD} m/s² · Cooldown {MOTION_COOLDOWN_MS} ms
+          {motionSupported
+            ? `Threshold ${MOTION_THRESHOLD} m/s² · Cooldown ${MOTION_COOLDOWN_MS} ms`
+            : 'Sensor nur auf iPhone / Android — Web zeigt keine Live-Werte.'}
         </Text>
 
         <View style={styles.grid}>

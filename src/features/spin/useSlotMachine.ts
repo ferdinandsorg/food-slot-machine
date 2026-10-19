@@ -1,10 +1,28 @@
 import * as Haptics from 'expo-haptics';
 import { useCallback, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 
 import { pickMeal, pickSingleSlot } from './selectFoods';
 import { REEL_STOP_DELAYS_MS, SPIN_TOTAL_MS } from './spinTiming';
 import type { FoodCategory, MealCombination } from '@/src/data/types';
 import { SLOT_ORDER } from '@/src/data/types';
+
+function hapticImpact(style: Haptics.ImpactFeedbackStyle) {
+  if (Platform.OS === 'web') return;
+  void Haptics.impactAsync(style).catch(() => undefined);
+}
+
+function hapticSelection() {
+  if (Platform.OS === 'web') return;
+  void Haptics.selectionAsync().catch(() => undefined);
+}
+
+function hapticSuccess() {
+  if (Platform.OS === 'web') return;
+  void Haptics.notificationAsync(
+    Haptics.NotificationFeedbackType.Success,
+  ).catch(() => undefined);
+}
 
 export type ReelState = {
   spinning: boolean;
@@ -40,7 +58,7 @@ export function useSlotMachine(): SlotMachineState {
     spinningRef.current = true;
     setSpinning(true);
     setSpinningSlots({ carbs: true, protein: true, veg: true });
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    hapticImpact(Haptics.ImpactFeedbackStyle.Medium);
 
     const next = pickMeal(mealRef.current ?? undefined);
 
@@ -52,7 +70,7 @@ export function useSlotMachine(): SlotMachineState {
           [category]: next[category],
         }));
         setSpinningSlots((prev) => ({ ...prev, [category]: false }));
-        void Haptics.selectionAsync();
+        hapticSelection();
       }, delay);
     }
 
@@ -60,7 +78,7 @@ export function useSlotMachine(): SlotMachineState {
       setMeal(next);
       setSpinning(false);
       spinningRef.current = false;
-      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      hapticSuccess();
     }, SPIN_TOTAL_MS);
   }, []);
 
@@ -72,7 +90,7 @@ export function useSlotMachine(): SlotMachineState {
     spinningRef.current = true;
     setSpinning(true);
     setSpinningSlots((prev) => ({ ...prev, [category]: true }));
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    hapticImpact(Haptics.ImpactFeedbackStyle.Light);
 
     const next = pickSingleSlot(category, mealRef.current);
     const delay = REEL_STOP_DELAYS_MS[category];
@@ -82,7 +100,7 @@ export function useSlotMachine(): SlotMachineState {
       setSpinningSlots((prev) => ({ ...prev, [category]: false }));
       setSpinning(false);
       spinningRef.current = false;
-      void Haptics.selectionAsync();
+      hapticSelection();
     }, delay);
   }, []);
 

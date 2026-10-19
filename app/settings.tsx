@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 
@@ -42,14 +42,16 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <Link href="/motion-debug" asChild>
-          <Pressable style={styles.linkCard}>
-            <Text style={styles.title}>Motion Debug</Text>
-            <Text style={styles.subtitle}>
-              Live-Sensorwerte und Trigger — zum Kalibrieren auf dem Gerät.
-            </Text>
-          </Pressable>
-        </Link>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Motion Debug"
+          onPress={() => router.push('/motion-debug')}
+          style={styles.linkCard}>
+          <Text style={styles.title}>Motion Debug</Text>
+          <Text style={styles.subtitle}>
+            Live-Sensorwerte und Trigger — zum Kalibrieren auf dem Gerät.
+          </Text>
+        </Pressable>
 
         <Text style={styles.disclaimer}>
           Food Slot liefert spielerische Mahlzeiteninspiration — keine
