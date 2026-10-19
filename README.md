@@ -36,18 +36,25 @@ npm start
 
 ### iPhone im gleichen WLAN (empfohlen)
 
-1. Mac/PC und iPhone im **gleichen WLAN** (kein VPN / kein Gastnetz, das Clients trennt).
-2. Auf dem Computer:
+**Wichtig (physisches iPhone):** Expo Go und Expo CLI müssen mit dem **selben kostenlosen Expo-Account** eingeloggt sein. Sonst erscheint: *You need to be signed in to Expo Go and Expo CLI…*
+
+1. Kostenlosen Account anlegen: https://expo.dev/signup  
+2. In **Expo Go** oben rechts aufs Account-Icon tippen und einloggen.  
+3. Am Computer einloggen:
+   ```bash
+   npx expo login
+   npx expo whoami   # sollte denselben Account zeigen
+   ```
+4. Mac/PC und iPhone im **gleichen WLAN** (kein VPN / kein Gastnetz, das Clients trennt).
+5. Dev-Server starten:
    ```bash
    npm start
    ```
-   oder explizit:
+   oder:
    ```bash
    npm run start:lan
    ```
-3. Auf dem iPhone **Expo Go** installieren (App Store).
-4. QR-Code aus dem Terminal mit der **Kamera** bzw. in Expo Go scannen.
-5. Alternativ die angezeigte URL öffnen, z. B. `exp://192.168.x.x:8081`.
+6. QR-Code mit der Kamera bzw. in Expo Go scannen — oder die `exp://…`-URL öffnen.
 
 Bewegungsgesten funktionieren nur am echten iPhone (nicht im Simulator).
 
