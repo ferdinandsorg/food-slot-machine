@@ -4,7 +4,7 @@ Playful iPhone app that spins three food slots — carbs, protein, and vegetable
 
 ## Stack
 
-- **Expo (SDK 58) + TypeScript + Expo Router**
+- **Expo (SDK 54) + TypeScript + Expo Router** — matches App Store Expo Go
 - Local food catalog (`data/foods.csv` → `src/data/foods.json`)
 - Local illustrations in `assets/foods/`
 - Motion spin via `expo-sensors` DeviceMotion (forward thrust) + button fallback

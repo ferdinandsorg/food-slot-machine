@@ -43,7 +43,9 @@
         {
           "motionPermission": "Food Slot nutzt Bewegungsdaten, damit du die Slots mit einem Vorwärtsschub starten kannst."
         }
-      ]
+      ],
+      "expo-font",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
