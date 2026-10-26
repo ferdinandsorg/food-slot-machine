@@ -21,6 +21,11 @@ const ICONS = {
     web: 'bookmarks',
   },
   trash: { ios: 'trash', android: 'delete', web: 'delete' },
+  foodPlaceholder: {
+    ios: 'fork.knife',
+    android: 'restaurant',
+    web: 'restaurant',
+  },
 } as const satisfies Record<string, SymbolViewProps['name']>;
 
 export type IconName = keyof typeof ICONS;

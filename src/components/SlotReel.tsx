@@ -13,6 +13,8 @@ import Animated, {
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
+  withDelay,
+  withSpring,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
@@ -40,7 +42,7 @@ export const REEL_ITEM_HEIGHT = 140;
 export const REEL_WINDOW_HEIGHT = Math.round(REEL_ITEM_HEIGHT * 1.65);
 
 /** Strip copies: one buffer above + enough turns for the longest spin. */
-const STRIP_COPIES = 8;
+const STRIP_COPIES = 6;
 /** How far (in items) the reel overshoots before settling back. */
 const OVERSHOOT = 0.18;
 /** Half-height of the payline arrows shown on a held reel. */
@@ -48,6 +50,9 @@ const MARKER_SIZE = 8;
 /** Chrome rim around each reel window. */
 const FRAME = 2;
 const HOLD_FADE_MS = 180;
+/** Result pop: each reel zooms this much, one after another. */
+const POP_SCALE = 1.04;
+export const REEL_POP_STAGGER_MS = 90;
 /** Shortest flick (px) that can count as a swipe if it is fast enough. */
 const SWIPE_START_PX = 12;
 /** A release past this distance always spins the reel. */
@@ -60,8 +65,10 @@ type Props = {
   food: Food;
   spin: ReelSpin;
   locked: boolean;
-  /** A new value backlights the reel pink (with a glow) to celebrate the result. */
-  celebrateKey: number;
+  /** A new value makes the reel pop (brief zoom) when the result lands. */
+  popKey: number;
+  /** Delay before this reel's pop, so the three ripple left to right. */
+  popDelay: number;
   disabled?: boolean;
   /** Tapping the reel toggles hold. */
   onPress: () => void;
@@ -74,7 +81,8 @@ export function SlotReel({
   food,
   spin,
   locked,
-  celebrateKey,
+  popKey,
+  popDelay,
   disabled,
   onPress,
   onSwipe,
@@ -97,7 +105,20 @@ export function SlotReel({
   const running = useSharedValue(false);
   const windowOpacity = useSharedValue(1);
   const held = useSharedValue(locked ? 1 : 0);
-  const flash = useSharedValue(0);
+  const pop = useSharedValue(1);
+
+  useEffect(() => {
+    if (popKey === 0 || reduceMotion) return;
+    pop.value = withDelay(
+      popDelay,
+      withSequence(
+        withTiming(POP_SCALE, { duration: 130 }),
+        withSpring(1, { damping: 24, stiffness: 260 }),
+      ),
+    );
+    // Only a new result should pop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [popKey]);
   // Strip speed (foods per second) for the motion-blur fade.
   const speed = useSharedValue(0);
   const lastPosition = useSharedValue(position.value);
@@ -166,7 +187,11 @@ export function SlotReel({
       dir === 1
         ? (targetIndex - startIndex + count) % count
         : (startIndex - targetIndex + count) % count;
-    const end = start + dir * (spin.loops * count + delta);
+    // Shortest path to the target that still covers the minimum travel, so a
+    // 24-food reel doesn't spin faster than an 8-food one.
+    const travel =
+      delta + Math.ceil(Math.max(0, spin.minTravel - delta) / count) * count;
+    const end = start + dir * travel;
     const runMs = Math.max(
       300,
       spin.durationMs - REEL_WINDUP_MS - REEL_SETTLE_MS,
@@ -216,23 +241,6 @@ export function SlotReel({
     held.value = withTiming(locked ? 1 : 0, { duration: HOLD_FADE_MS });
   }, [locked, held]);
 
-  useEffect(() => {
-    if (celebrateKey === 0) {
-      return;
-    }
-    flash.value = reduceMotion
-      ? withSequence(
-          withTiming(0.55, { duration: 120 }),
-          withTiming(0, { duration: 600 }),
-        )
-      : withSequence(
-          withTiming(0.75, { duration: 110 }),
-          withTiming(0.15, { duration: 160 }),
-          withTiming(0.6, { duration: 110 }),
-          withTiming(0, { duration: 480 }),
-        );
-  }, [celebrateKey, flash, reduceMotion]);
-
   const stripStyle = useAnimatedStyle(() => ({
     // Fade the foods at full speed — reads as motion blur and hides strobing.
     opacity: interpolate(speed.value, [8, 26], [1, 0.4], 'clamp'),
@@ -244,6 +252,9 @@ export function SlotReel({
           position.value * REEL_ITEM_HEIGHT,
       },
     ],
+  }));
+  const popStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pop.value }],
   }));
   const windowStyle = useAnimatedStyle(() => ({
     opacity: windowOpacity.value,
@@ -258,17 +269,12 @@ export function SlotReel({
     opacity: held.value,
     transform: [{ translateX: (1 - held.value) * MARKER_SIZE }],
   }));
-  const flashStyle = useAnimatedStyle(() => ({ opacity: flash.value }));
 
   return (
-    <View
+    <Animated.View
       {...responder}
       // Held reel draws above its neighbours so its glow isn't cut off.
-      style={[styles.gestureArea, locked && styles.frameRaised]}>
-      <Animated.View
-        pointerEvents="none"
-        style={[styles.resultGlow, flashStyle]}
-      />
+      style={[styles.gestureArea, locked && styles.frameRaised, popStyle]}>
       <View
         // Touches are handled by the wrapper above; this view only carries
         // the VoiceOver semantics (activate = hold, custom action = spin).
@@ -292,11 +298,6 @@ export function SlotReel({
           style={[styles.holdFrame, holdFrameStyle]}
         />
         <Animated.View style={[styles.window, windowStyle]}>
-          {/* Result light sits behind the foods so they stay readable. */}
-          <Animated.View
-            pointerEvents="none"
-            style={[styles.flash, flashStyle]}
-          />
           <Animated.View style={stripStyle}>
             {strip.map((item, index) => (
               <View key={`${item.id}-${index}`} style={styles.item}>
@@ -327,7 +328,7 @@ export function SlotReel({
           />
         </Animated.View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -402,17 +403,5 @@ const styles = StyleSheet.create({
   curve: {
     ...StyleSheet.absoluteFill,
     backgroundImage: gradients.reelCurve,
-  },
-  /** Pink backlight behind the foods when the result lands. */
-  flash: {
-    ...StyleSheet.absoluteFill,
-    backgroundImage: `radial-gradient(ellipse 85% 65% at 50% 48%, rgba(255, 140, 190, 0.95) 0%, ${colors.highlight} 70%, rgba(180, 20, 95, 1) 100%)`,
-  },
-  /** Pink glow around the reel, in step with the backlight. */
-  resultGlow: {
-    ...StyleSheet.absoluteFill,
-    borderRadius: radii.md,
-    backgroundColor: colors.highlight,
-    boxShadow: `0 0 18px 4px ${colors.highlight}`,
   },
 });

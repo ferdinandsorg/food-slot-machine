@@ -122,7 +122,7 @@ npm run typecheck
 - Respects iOS Reduce Motion; vibration toggle in Settings
 - Forward-thrust gesture (toggle in Settings) + always-on button
 - Motion debug screen for threshold tuning
-- Vegetarian starter catalog (24 foods)
+- Vegetarian catalog (55 foods: 15 carbs, 16 protein, 24 fiber)
 
 ## Adding a food
 

@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     boxShadow: [
       // Rounded lip catching light at the top, soft shade towards the bottom.
       'inset 0 3px 3px rgba(255, 255, 255, 0.55)',
-      'inset 0 -6px 10px rgba(10, 70, 110, 0.3)',
+      'inset 0 -6px 10px rgba(50, 24, 120, 0.3)',
       '0 2px 2px rgba(0, 0, 0, 0.35)',
     ].join(', '),
   },
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.96 }, { translateY: 1 }],
     boxShadow: [
       'inset 0 2px 2px rgba(255, 255, 255, 0.35)',
-      'inset 0 3px 8px rgba(10, 70, 110, 0.4)',
+      'inset 0 3px 8px rgba(50, 24, 120, 0.4)',
     ].join(', '),
   },
   /** Soft satin highlight in the upper left of the cap. */

@@ -12,7 +12,6 @@ import { SFIcon } from './SFIcon';
 import { colors, gradients } from '@/src/theme/tokens';
 
 export const SAVE_BUTTON_SIZE = 60;
-const RING = 5;
 
 type Props = {
   saved: boolean;
@@ -20,7 +19,7 @@ type Props = {
   onPress: () => void;
 };
 
-/** Small silver key next to Spin: bookmarks the combination on the reels. */
+/** Quiet key next to Spin: bookmarks the combination on the reels. */
 export function SaveButton({ saved, disabled, onPress }: Props) {
   const scale = useSharedValue(1);
   const mounted = useRef(false);
@@ -70,18 +69,11 @@ export function SaveButton({ saved, disabled, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
+  // Quiet by design (Figma v2): no ring, no outer shadow — just a recessed disc.
   bezel: {
     width: SAVE_BUTTON_SIZE,
     height: SAVE_BUTTON_SIZE,
     borderRadius: SAVE_BUTTON_SIZE / 2,
-    padding: RING,
-    backgroundImage: gradients.cabinet,
-    borderWidth: 1,
-    borderColor: 'rgba(30, 24, 40, 0.6)',
-    boxShadow: [
-      'inset 0 2px 1px rgba(255, 255, 255, 0.8)',
-      '0 6px 14px rgba(14, 8, 22, 0.4)',
-    ].join(', '),
   },
   face: {
     flex: 1,

@@ -9,13 +9,16 @@ export const colors = {
   bgBottom: '#1E1729',
   surface: 'rgba(246, 242, 251, 0.08)',
   surfaceStrong: 'rgba(246, 242, 251, 0.16)',
-  /** Spin key cap: luminous azure. */
-  accent: '#2FB2EE',
-  accentLight: '#9BB7FF',
-  accentPressed: '#0F5E92',
-  accentGlow: 'rgba(70, 190, 255, 0.5)',
-  /** Held reels: hot pink. */
-  highlight: '#E73387',
+  /**
+   * The one highlight colour: electric violet, between the former pink and
+   * blue. Spin cap, held reels, result glow and badges all use it.
+   */
+  accent: '#8B5CF6',
+  accentLight: '#BBA6FF',
+  accentPressed: '#5B33C9',
+  accentGlow: 'rgba(139, 92, 246, 0.5)',
+  /** Same as accent — kept as its own name for held/result states. */
+  highlight: '#8B5CF6',
   bulb: '#FFE9D2',
   text: '#F6F2FB',
   textMuted: 'rgba(246, 242, 251, 0.66)',
@@ -55,7 +58,7 @@ export const gradients = {
     // Light band sits high on the drum (lit from above), per Figma v2.
     'linear-gradient(to bottom, rgba(21,16,29,0.92) 0%, rgba(21,16,29,0.35) 20%, rgba(255,255,255,0.18) 33%, rgba(255,255,255,0.05) 62%, rgba(21,16,29,0.35) 80%, rgba(21,16,29,0.92) 100%)',
   /** Spin cap: soft dome in the accent blue, lighter where the light hits. */
-  spinCap: `radial-gradient(ellipse 90% 90% at 42% 32%, #8FD6F6 0%, ${colors.accent} 62%, #2192CC 100%)`,
+  spinCap: `radial-gradient(ellipse 90% 90% at 42% 32%, ${colors.accentLight} 0%, ${colors.accent} 62%, ${colors.accentPressed} 100%)`,
   /** Satin chrome bezel ring around the spin cap. */
   bezel:
     'linear-gradient(160deg, #FAF8FC 0%, #D9D4E1 35%, #ABA5B7 70%, #8B8599 100%)',

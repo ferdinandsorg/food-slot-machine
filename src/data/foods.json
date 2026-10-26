@@ -26,22 +26,10 @@
     "enabled": true
   },
   {
-    "id": "oats",
-    "name": "Haferflocken",
+    "id": "pasta",
+    "name": "Nudeln",
     "category": "carbs",
-    "imageKey": "oats",
-    "emoji": "🥣",
-    "tags": [
-      "vegan",
-      "vegetarian"
-    ],
-    "enabled": true
-  },
-  {
-    "id": "whole_wheat_pasta",
-    "name": "Vollkornnudeln",
-    "category": "carbs",
-    "imageKey": "whole_wheat_pasta",
+    "imageKey": "pasta",
     "emoji": "🍝",
     "tags": [
       "vegetarian"
@@ -92,6 +80,96 @@
     "tags": [
       "vegan",
       "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "bulgur",
+    "name": "Bulgur",
+    "category": "carbs",
+    "imageKey": "bulgur",
+    "emoji": "🥣",
+    "tags": [
+      "vegan",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "millet",
+    "name": "Hirse",
+    "category": "carbs",
+    "imageKey": "millet",
+    "emoji": "🌾",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "buckwheat",
+    "name": "Buchweizen",
+    "category": "carbs",
+    "imageKey": "buckwheat",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "amaranth",
+    "name": "Amaranth",
+    "category": "carbs",
+    "imageKey": "amaranth",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "bread",
+    "name": "Brot",
+    "category": "carbs",
+    "imageKey": "bread",
+    "emoji": "🍞",
+    "tags": [
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "gnocchi",
+    "name": "Gnocchi",
+    "category": "carbs",
+    "imageKey": "gnocchi",
+    "tags": [
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "spaetzle",
+    "name": "Spätzle",
+    "category": "carbs",
+    "imageKey": "spaetzle",
+    "tags": [
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "potato_dumplings",
+    "name": "Kartoffelknödel",
+    "category": "carbs",
+    "imageKey": "potato_dumplings",
+    "tags": [
       "vegetarian"
     ],
     "enabled": true
@@ -185,6 +263,99 @@
     "name": "Edamame",
     "category": "protein",
     "imageKey": "edamame",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "seitan",
+    "name": "Seitan",
+    "category": "protein",
+    "imageKey": "seitan",
+    "emoji": "🌾",
+    "tags": [
+      "vegan",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "skyr",
+    "name": "Skyr",
+    "category": "protein",
+    "imageKey": "skyr",
+    "emoji": "🥣",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "cottage_cheese",
+    "name": "Hüttenkäse",
+    "category": "protein",
+    "imageKey": "cottage_cheese",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "mozzarella",
+    "name": "Mozzarella",
+    "category": "protein",
+    "imageKey": "mozzarella",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "shepherds_cheese",
+    "name": "Hirtenkäse",
+    "category": "protein",
+    "imageKey": "shepherds_cheese",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "halloumi",
+    "name": "Halloumi",
+    "category": "protein",
+    "imageKey": "halloumi",
+    "emoji": "🧀",
+    "tags": [
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "soy_granules",
+    "name": "Sojagranulat",
+    "category": "protein",
+    "imageKey": "soy_granules",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "soy_chunks",
+    "name": "Sojaschnetzel",
+    "category": "protein",
+    "imageKey": "soy_chunks",
     "tags": [
       "vegan",
       "gluten_free",
@@ -294,6 +465,220 @@
     "name": "Feldsalat",
     "category": "fiber",
     "imageKey": "lambs_lettuce",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "kale",
+    "name": "Grünkohl",
+    "category": "fiber",
+    "imageKey": "kale",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "brussels_sprouts",
+    "name": "Rosenkohl",
+    "category": "fiber",
+    "imageKey": "brussels_sprouts",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "red_cabbage",
+    "name": "Rotkohl",
+    "category": "fiber",
+    "imageKey": "red_cabbage",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "beetroot",
+    "name": "Rote Bete",
+    "category": "fiber",
+    "imageKey": "beetroot",
+    "emoji": "🫜",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "kohlrabi",
+    "name": "Kohlrabi",
+    "category": "fiber",
+    "imageKey": "kohlrabi",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "eggplant",
+    "name": "Aubergine",
+    "category": "fiber",
+    "imageKey": "eggplant",
+    "emoji": "🍆",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "savoy_cabbage",
+    "name": "Wirsing",
+    "category": "fiber",
+    "imageKey": "savoy_cabbage",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "white_cabbage",
+    "name": "Weißkohl",
+    "category": "fiber",
+    "imageKey": "white_cabbage",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "leek",
+    "name": "Lauch",
+    "category": "fiber",
+    "imageKey": "leek",
+    "emoji": "🧅",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "chard",
+    "name": "Mangold",
+    "category": "fiber",
+    "imageKey": "chard",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "fennel",
+    "name": "Fenchel",
+    "category": "fiber",
+    "imageKey": "fennel",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "parsnip",
+    "name": "Pastinake",
+    "category": "fiber",
+    "imageKey": "parsnip",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "celery",
+    "name": "Sellerie",
+    "category": "fiber",
+    "imageKey": "celery",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "asparagus",
+    "name": "Spargel",
+    "category": "fiber",
+    "imageKey": "asparagus",
+    "emoji": "🌱",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "tomato",
+    "name": "Tomaten",
+    "category": "fiber",
+    "imageKey": "tomato",
+    "emoji": "🍅",
+    "tags": [
+      "vegan",
+      "gluten_free",
+      "vegetarian",
+      "high_fiber"
+    ],
+    "enabled": true
+  },
+  {
+    "id": "avocado",
+    "name": "Avocado",
+    "category": "fiber",
+    "imageKey": "avocado",
+    "emoji": "🥑",
     "tags": [
       "vegan",
       "gluten_free",

@@ -8,9 +8,10 @@ import { LockButton } from '@/src/components/LockButton';
 import { SAVE_BUTTON_SIZE, SaveButton } from '@/src/components/SaveButton';
 import { SFIcon } from '@/src/components/SFIcon';
 import { MarqueeTitle } from '@/src/components/MarqueeTitle';
-import { MarqueeLights } from '@/src/components/MarqueeLights';
-import { SlotReel } from '@/src/components/SlotReel';
+import { ResultAura } from '@/src/components/ResultAura';
+import { REEL_POP_STAGGER_MS, SlotReel } from '@/src/components/SlotReel';
 import { SpinButton } from '@/src/components/SpinButton';
+import { FEATURES } from '@/src/config/features';
 import * as feedback from '@/src/features/spin/feedback';
 import { useSlotMachine } from '@/src/features/spin/useSlotMachine';
 import { useSavedMeals } from '@/src/features/saved/savedMeals';
@@ -95,18 +96,20 @@ export default function HomeScreen() {
         ]}>
         <View style={styles.topBar}>
           <View style={styles.topActions}>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={`Gespeicherte Kombinationen, ${saved.length}`}
-              onPress={() => router.push('/saved')}
-              style={styles.iconButton}>
-              <SFIcon name="savedList" size={20} color={colors.text} />
-              {saved.length > 0 && (
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{saved.length}</Text>
-                </View>
-              )}
-            </Pressable>
+            {FEATURES.savedMeals && (
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Gespeicherte Kombinationen, ${saved.length}`}
+                onPress={() => router.push('/saved')}
+                style={styles.iconButton}>
+                <SFIcon name="savedList" size={20} color={colors.text} />
+                {saved.length > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>{saved.length}</Text>
+                  </View>
+                )}
+              </Pressable>
+            )}
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Einstellungen"
@@ -118,62 +121,62 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.stage}>
-          <View style={styles.cabinet}>
-            <View style={styles.marquee}>
-              <MarqueeLights active={spinning} celebrateKey={resultKey} />
-              <MarqueeTitle
-                text="Food Slot Machine"
-                style={styles.marqueeTitle}
-                active={spinning}
-              />
-              <MarqueeLights
-                active={spinning}
-                celebrateKey={resultKey}
-                reverse
-              />
-            </View>
-
-            <View style={styles.inset}>
-              <View style={styles.row}>
-                {SLOT_ORDER.map((category) => (
-                  <Text
-                    key={category}
-                    style={styles.categoryLabel}
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
-                    minimumFontScale={0.8}>
-                    {CATEGORY_LABELS[category]}
-                  </Text>
-                ))}
+          <View>
+            <ResultAura triggerKey={resultKey} borderRadius={radii.xl} />
+            <View style={styles.cabinet}>
+              <View style={styles.marquee}>
+                <MarqueeTitle
+                  text="Food Slot Machine"
+                  style={styles.marqueeTitle}
+                  active={spinning}
+                />
               </View>
 
-              <View style={styles.reels}>
-                {SLOT_ORDER.map((category) => (
-                  <SlotReel
-                    key={category}
-                    category={category}
-                    food={meal[category]}
-                    spin={reelSpins[category]}
-                    locked={locked[category]}
-                    celebrateKey={resultKey}
-                    disabled={spinning}
-                    onPress={() => toggleLock(category)}
-                    onSwipe={(direction) => spinReel(category, direction)}
-                  />
-                ))}
-              </View>
+              <View style={styles.inset}>
+                <View style={styles.row}>
+                  {SLOT_ORDER.map((category) => (
+                    <Text
+                      key={category}
+                      style={styles.categoryLabel}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.8}>
+                      {CATEGORY_LABELS[category]}
+                    </Text>
+                  ))}
+                </View>
 
-              <View style={styles.row}>
-                {SLOT_ORDER.map((category) => (
-                  <View key={category} style={styles.lockCell}>
-                    <LockButton
-                      label={CATEGORY_LABELS[category]}
-                      active={locked[category]}
+                <View style={styles.reels}>
+                  {SLOT_ORDER.map((category) => (
+                    <SlotReel
+                      key={category}
+                      category={category}
+                      food={meal[category]}
+                      spin={reelSpins[category]}
+                      locked={locked[category]}
+                      popKey={resultKey}
+                      popDelay={
+                        SLOT_ORDER.indexOf(category) * REEL_POP_STAGGER_MS
+                      }
                       disabled={spinning}
                       onPress={() => toggleLock(category)}
+                      onSwipe={(direction) => spinReel(category, direction)}
                     />
-                  </View>
-                ))}
+                  ))}
+                </View>
+
+                <View style={styles.row}>
+                  {SLOT_ORDER.map((category) => (
+                    <View key={category} style={styles.lockCell}>
+                      <LockButton
+                        label={CATEGORY_LABELS[category]}
+                        active={locked[category]}
+                        disabled={spinning}
+                        onPress={() => toggleLock(category)}
+                      />
+                    </View>
+                  ))}
+                </View>
               </View>
             </View>
           </View>
@@ -182,7 +185,7 @@ export default function HomeScreen() {
         <View style={styles.footer}>
           <View style={styles.controls}>
             {/* Spacer keeps Spin centred against the save key. */}
-            <View style={styles.controlSide} />
+            {FEATURES.savedMeals && <View style={styles.controlSide} />}
             <SpinButton
               onPress={spinAll}
               dimmed={spinning || allLocked}
@@ -191,13 +194,15 @@ export default function HomeScreen() {
               label="Spin"
               accessibilityLabel={spinA11yLabel}
             />
-            <View style={styles.controlSide}>
-              <SaveButton
-                saved={isSaved}
-                disabled={spinning}
-                onPress={onSave}
-              />
-            </View>
+            {FEATURES.savedMeals && (
+              <View style={styles.controlSide}>
+                <SaveButton
+                  saved={isSaved}
+                  disabled={spinning}
+                  onPress={onSave}
+                />
+              </View>
+            )}
           </View>
           <Text style={styles.hint}>
             {motionEnabled
@@ -276,8 +281,7 @@ const styles = StyleSheet.create({
   },
   /** Dark glass sign plate set into the metal. */
   marquee: {
-    gap: spacing.sm + 4,
-    paddingVertical: spacing.sm + 4,
+    paddingVertical: spacing.md + 2,
     paddingHorizontal: spacing.sm + 6,
     borderRadius: radii.lg,
     backgroundImage: gradients.plate,

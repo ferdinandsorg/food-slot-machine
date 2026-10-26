@@ -1,7 +1,8 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 
+import { SFIcon } from './SFIcon';
 import { getFoodImage } from '@/src/data/foodImages';
-import { colors, radii, typography } from '@/src/theme/tokens';
+import { colors, radii } from '@/src/theme/tokens';
 
 type Props = {
   imageKey: string;
@@ -31,9 +32,20 @@ export function FoodImage({ imageKey, name, emoji, size = 96 }: Props) {
   const source = getFoodImage(imageKey);
 
   if (!source) {
+    // No emoji and no art yet: quiet grey SF Symbol placeholder.
     return (
-      <View style={[styles.fallback, { width: size, height: size }]}>
-        <Text style={styles.fallbackLetter}>{name.charAt(0)}</Text>
+      <View
+        style={[
+          styles.placeholder,
+          { width: size * 0.78, height: size * 0.78, margin: size * 0.11 },
+        ]}
+        accessibilityLabel={name}>
+        <SFIcon
+          name="foodPlaceholder"
+          size={size * 0.34}
+          weight="medium"
+          color={colors.inkMuted}
+        />
       </View>
     );
   }
@@ -63,15 +75,10 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 3 },
     textShadowRadius: 4,
   },
-  fallback: {
+  placeholder: {
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.surfaceStrong,
-    borderRadius: radii.md,
-  },
-  fallbackLetter: {
-    ...typography.headline,
-    color: colors.accent,
-    fontSize: 28,
+    borderRadius: 999,
+    backgroundColor: 'rgba(29, 24, 38, 0.07)',
   },
 });

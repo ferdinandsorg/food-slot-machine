@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import * as feedback from './feedback';
 import { pickMeal, type LockState } from './selectFoods';
-import { reelDuration, reelImpactAt, reelLoops } from './spinTiming';
+import { reelDuration, reelImpactAt, reelMinTravel } from './spinTiming';
 import type { FoodCategory, MealCombination } from '@/src/data/types';
 import { SLOT_ORDER } from '@/src/data/types';
 
@@ -13,7 +13,8 @@ export type SpinDirection = 1 | -1;
 export type ReelSpin = {
   key: number;
   durationMs: number;
-  loops: number;
+  /** At least this many foods pass the payline before the reel lands. */
+  minTravel: number;
   direction: SpinDirection;
 };
 
@@ -39,7 +40,7 @@ function allFalse(): Record<FoodCategory, boolean> {
 }
 
 function initialSpins(): Record<FoodCategory, ReelSpin> {
-  const idle: ReelSpin = { key: 0, durationMs: 0, loops: 0, direction: 1 };
+  const idle: ReelSpin = { key: 0, durationMs: 0, minTravel: 0, direction: 1 };
   return { protein: idle, carbs: idle, fiber: idle };
 }
 
@@ -84,7 +85,7 @@ export function useSlotMachine(): SlotMachineState {
         spins[category] = {
           key: Date.now() + order,
           durationMs: reelDuration(order),
-          loops: reelLoops(order),
+          minTravel: reelMinTravel(order),
           direction,
         };
       });
