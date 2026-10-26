@@ -44,8 +44,13 @@ const foods = body
     name: row[idx.name],
     category: row[idx.category],
     imageKey: row[idx.image_key],
+    // Unicode emoji, rendered by the system (Apple emoji on iOS). Empty = use imageKey art.
+    ...(row[idx.emoji] ? { emoji: row[idx.emoji] } : {}),
     tags: row[idx.tags]
-      ? row[idx.tags].split(';').map((t) => t.trim()).filter(Boolean)
+      ? row[idx.tags]
+          .split(';')
+          .map((t) => t.trim())
+          .filter(Boolean)
       : [],
     enabled: row[idx.enabled]?.toLowerCase() === 'true',
   }));

@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   heading: {
-    ...typography.brand,
+    ...typography.headline,
     fontSize: 28,
     color: colors.text,
   },

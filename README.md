@@ -1,10 +1,10 @@
 # Food Slot Machine
 
-Playful iPhone app that spins three food slots — carbs, protein, and vegetables — into a spontaneous vegetarian meal idea.
+Playful iPhone app that spins three food slots — protein, carbs and fiber (Ballaststoffe) — into a spontaneous vegetarian meal idea. Not a recipe app: it inspires what to buy and cook.
 
 ## Stack
 
-- **Expo (SDK 57) + TypeScript + Expo Router** — matches current App Store Expo Go
+- **Expo (SDK 58) + TypeScript + Expo Router** — matches current App Store Expo Go
 - Local food catalog (`data/foods.csv` → `src/data/foods.json`)
 - Local illustrations in `assets/foods/`
 - Motion spin via `expo-sensors` DeviceMotion (forward thrust) + button fallback
@@ -38,7 +38,9 @@ npm start
 
 ### iPhone im gleichen WLAN (empfohlen)
 
-Dieses Projekt ist **nicht** an ein EAS-Konto gebunden (`owner` / `projectId` fehlen absichtlich). Expo Go funktioniert deshalb **ohne Login** — wie früher, einfach QR scannen.
+Dieses Projekt ist **nicht** an ein EAS-Konto gebunden (`owner` / `projectId` fehlen absichtlich).
+
+**Login-Regel:** Ist Expo Go auf dem iPhone mit einem Expo-Konto angemeldet, muss die CLI auf dem Mac mit **demselben** Konto angemeldet sein (`npx expo login`, einmalig pro Mac). Ist Expo Go abgemeldet, geht es auch ohne Login.
 
 1. Mac/PC und iPhone im **gleichen WLAN** (kein VPN / kein Gastnetz, das Clients trennt).
 2. Dev-Server starten:
@@ -112,14 +114,18 @@ npm run typecheck
 ## MVP features
 
 - Three animated reels with local food names + placeholder art
-- Spin all / respin one slot
+- Real reel strips that run through and snap in place
+- Hold (lock) a slot you already have by tapping it, spin the rest
+- Swipe a single reel up or down to spin just that reel
+- Save the current combination (bookmark key next to Spin, stored on device); list and delete saved ones on the Gespeichert screen
+- Game feel: tick per food passing the payline, stop thud on impact, result celebration (marquee chase, payline flash, strongest haptic), shake when Spin is refused
+- Respects iOS Reduce Motion; vibration toggle in Settings
 - Forward-thrust gesture (toggle in Settings) + always-on button
 - Motion debug screen for threshold tuning
-- Vegetarian starter catalog (24 foods)
+- Vegetarian catalog (55 foods: 15 carbs, 16 protein, 24 fiber)
 
 ## Adding a food
 
-1. Add a row to `data/foods.csv`
+1. Add a row to `data/foods.csv` — put a Unicode emoji in the `emoji` column if one fits (rendered as Apple emoji on iOS)
 2. Run `npm run data:foods`
-3. Drop `assets/foods/<image_key>.png`
-4. Register it in `src/data/foodImages.ts`
+3. No fitting emoji? Leave `emoji` empty, drop `assets/foods/<image_key>.png` and register it in `src/data/foodImages.ts`

@@ -1,15 +1,15 @@
 import { getFoodsByCategory } from '@/src/data/loadFoods';
 import type { Food, FoodCategory, MealCombination } from '@/src/data/types';
+import { SLOT_ORDER } from '@/src/data/types';
+
+export type LockState = Record<FoodCategory, boolean>;
 
 function randomIndex(length: number): number {
   return Math.floor(Math.random() * length);
 }
 
 /** Pick a random enabled food in a category, optionally avoiding the previous id. */
-export function pickFood(
-  category: FoodCategory,
-  avoidId?: string,
-): Food {
+export function pickFood(category: FoodCategory, avoidId?: string): Food {
   const pool = getFoodsByCategory(category);
   if (pool.length === 0) {
     throw new Error(`No enabled foods for category: ${category}`);
@@ -24,20 +24,16 @@ export function pickFood(
   return list[randomIndex(list.length)];
 }
 
-export function pickMeal(previous?: Partial<MealCombination>): MealCombination {
-  return {
-    carbs: pickFood('carbs', previous?.carbs?.id),
-    protein: pickFood('protein', previous?.protein?.id),
-    veg: pickFood('veg', previous?.veg?.id),
-  };
-}
-
-export function pickSingleSlot(
-  category: FoodCategory,
-  current: MealCombination,
+/** New combination; locked slots keep their current food. */
+export function pickMeal(
+  previous?: Partial<MealCombination>,
+  locked?: Partial<LockState>,
 ): MealCombination {
-  return {
-    ...current,
-    [category]: pickFood(category, current[category].id),
-  };
+  const meal = {} as MealCombination;
+  for (const category of SLOT_ORDER) {
+    const current = previous?.[category];
+    meal[category] =
+      locked?.[category] && current ? current : pickFood(category, current?.id);
+  }
+  return meal;
 }

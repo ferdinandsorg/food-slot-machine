@@ -1,114 +1,174 @@
-import * as Haptics from 'expo-haptics';
-import { useCallback, useRef, useState } from 'react';
-import { Platform } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { pickMeal, pickSingleSlot } from './selectFoods';
-import { REEL_STOP_DELAYS_MS, SPIN_TOTAL_MS } from './spinTiming';
+import * as feedback from './feedback';
+import { pickMeal, type LockState } from './selectFoods';
+import { reelDuration, reelImpactAt, reelMinTravel } from './spinTiming';
 import type { FoodCategory, MealCombination } from '@/src/data/types';
 import { SLOT_ORDER } from '@/src/data/types';
 
-function hapticImpact(style: Haptics.ImpactFeedbackStyle) {
-  if (Platform.OS === 'web') return;
-  void Haptics.impactAsync(style).catch(() => undefined);
-}
+/** Strip travel: 1 = foods move up (default), -1 = foods move down. */
+export type SpinDirection = 1 | -1;
 
-function hapticSelection() {
-  if (Platform.OS === 'web') return;
-  void Haptics.selectionAsync().catch(() => undefined);
-}
-
-function hapticSuccess() {
-  if (Platform.OS === 'web') return;
-  void Haptics.notificationAsync(
-    Haptics.NotificationFeedbackType.Success,
-  ).catch(() => undefined);
-}
-
-export type ReelState = {
-  spinning: boolean;
-  food: MealCombination[FoodCategory] | null;
+/** One spin instruction for a reel; a new `key` starts the animation. */
+export type ReelSpin = {
+  key: number;
+  durationMs: number;
+  /** At least this many foods pass the payline before the reel lands. */
+  minTravel: number;
+  direction: SpinDirection;
 };
 
 export type SlotMachineState = {
-  meal: MealCombination | null;
+  meal: MealCombination;
+  locked: LockState;
   spinning: boolean;
   spinningSlots: Record<FoodCategory, boolean>;
+  reelSpins: Record<FoodCategory, ReelSpin>;
+  allLocked: boolean;
+  /** Increments when the last reel hits the payline — drives the celebration. */
+  resultKey: number;
+  /** Increments when Spin is pressed while every reel is held. */
+  deniedKey: number;
   spinAll: () => void;
-  spinSlot: (category: FoodCategory) => void;
+  /** Spin a single reel, e.g. after a vertical swipe on it. */
+  spinReel: (category: FoodCategory, direction: SpinDirection) => void;
+  toggleLock: (category: FoodCategory) => void;
 };
 
-function emptySpinning(): Record<FoodCategory, boolean> {
-  return { carbs: false, protein: false, veg: false };
+function allFalse(): Record<FoodCategory, boolean> {
+  return { protein: false, carbs: false, fiber: false };
+}
+
+function initialSpins(): Record<FoodCategory, ReelSpin> {
+  const idle: ReelSpin = { key: 0, durationMs: 0, minTravel: 0, direction: 1 };
+  return { protein: idle, carbs: idle, fiber: idle };
 }
 
 export function useSlotMachine(): SlotMachineState {
-  const [meal, setMeal] = useState<MealCombination | null>(() => pickMeal());
-  const [spinning, setSpinning] = useState(false);
-  const [spinningSlots, setSpinningSlots] = useState(emptySpinning);
+  const [meal, setMeal] = useState<MealCombination>(() => pickMeal());
+  const [locked, setLocked] = useState<LockState>(allFalse);
+  const [spinningSlots, setSpinningSlots] = useState(allFalse);
+  const [reelSpins, setReelSpins] = useState(initialSpins);
+  const [resultKey, setResultKey] = useState(0);
+  const [deniedKey, setDeniedKey] = useState(0);
   const mealRef = useRef(meal);
+  const lockedRef = useRef(locked);
   const spinningRef = useRef(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   mealRef.current = meal;
+  lockedRef.current = locked;
+
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const spinning = SLOT_ORDER.some((category) => spinningSlots[category]);
+  const allLocked = SLOT_ORDER.every((category) => locked[category]);
+
+  /** Spin the given reels; every other reel keeps its food. */
+  const startSpin = useCallback(
+    (toSpin: FoodCategory[], direction: SpinDirection) => {
+      spinningRef.current = true;
+      timersRef.current = [];
+      feedback.spinStart();
+
+      const keep = Object.fromEntries(
+        SLOT_ORDER.map((category) => [category, !toSpin.includes(category)]),
+      ) as LockState;
+      const next = pickMeal(mealRef.current, keep);
+      setMeal(next);
+
+      const spins: Partial<Record<FoodCategory, ReelSpin>> = {};
+      toSpin.forEach((category, order) => {
+        spins[category] = {
+          key: Date.now() + order,
+          durationMs: reelDuration(order),
+          minTravel: reelMinTravel(order),
+          direction,
+        };
+      });
+      setReelSpins((prev) => ({ ...prev, ...spins }));
+      setSpinningSlots((prev) => {
+        const nextSlots = { ...prev };
+        toSpin.forEach((category) => {
+          nextSlots[category] = true;
+        });
+        return nextSlots;
+      });
+
+      toSpin.forEach((category, order) => {
+        const isLast = order === toSpin.length - 1;
+        // Feedback lands on the visible hit (overshoot), state flips after settling.
+        const impact = setTimeout(() => {
+          if (isLast) {
+            feedback.result();
+            setResultKey((k) => k + 1);
+          } else {
+            feedback.reelStop();
+          }
+        }, reelImpactAt(order));
+        const settled = setTimeout(() => {
+          setSpinningSlots((prev) => ({ ...prev, [category]: false }));
+          if (isLast) {
+            spinningRef.current = false;
+          }
+        }, reelDuration(order));
+        timersRef.current.push(impact, settled);
+      });
+    },
+    [],
+  );
 
   const spinAll = useCallback(() => {
     if (spinningRef.current) {
       return;
     }
-
-    spinningRef.current = true;
-    setSpinning(true);
-    setSpinningSlots({ carbs: true, protein: true, veg: true });
-    hapticImpact(Haptics.ImpactFeedbackStyle.Medium);
-
-    const next = pickMeal(mealRef.current ?? undefined);
-
-    for (const category of SLOT_ORDER) {
-      const delay = REEL_STOP_DELAYS_MS[category];
-      setTimeout(() => {
-        setMeal((prev) => ({
-          ...(prev ?? next),
-          [category]: next[category],
-        }));
-        setSpinningSlots((prev) => ({ ...prev, [category]: false }));
-        hapticSelection();
-      }, delay);
-    }
-
-    setTimeout(() => {
-      setMeal(next);
-      setSpinning(false);
-      spinningRef.current = false;
-      hapticSuccess();
-    }, SPIN_TOTAL_MS);
-  }, []);
-
-  const spinSlot = useCallback((category: FoodCategory) => {
-    if (spinningRef.current || !mealRef.current) {
+    const toSpin = SLOT_ORDER.filter(
+      (category) => !lockedRef.current[category],
+    );
+    if (toSpin.length === 0) {
+      feedback.denied();
+      setDeniedKey((k) => k + 1);
       return;
     }
+    startSpin(toSpin, 1);
+  }, [startSpin]);
 
-    spinningRef.current = true;
-    setSpinning(true);
-    setSpinningSlots((prev) => ({ ...prev, [category]: true }));
-    hapticImpact(Haptics.ImpactFeedbackStyle.Light);
+  const spinReel = useCallback(
+    (category: FoodCategory, direction: SpinDirection) => {
+      if (spinningRef.current) {
+        return;
+      }
+      if (lockedRef.current[category]) {
+        feedback.denied();
+        return;
+      }
+      startSpin([category], direction);
+    },
+    [startSpin],
+  );
 
-    const next = pickSingleSlot(category, mealRef.current);
-    const delay = REEL_STOP_DELAYS_MS[category];
-
-    setTimeout(() => {
-      setMeal(next);
-      setSpinningSlots((prev) => ({ ...prev, [category]: false }));
-      setSpinning(false);
-      spinningRef.current = false;
-      hapticSelection();
-    }, delay);
+  const toggleLock = useCallback((category: FoodCategory) => {
+    if (spinningRef.current) {
+      return;
+    }
+    feedback.holdToggled();
+    setLocked((prev) => ({ ...prev, [category]: !prev[category] }));
   }, []);
 
   return {
     meal,
+    locked,
     spinning,
     spinningSlots,
+    reelSpins,
+    allLocked,
+    resultKey,
+    deniedKey,
     spinAll,
-    spinSlot,
+    spinReel,
+    toggleLock,
   };
 }
