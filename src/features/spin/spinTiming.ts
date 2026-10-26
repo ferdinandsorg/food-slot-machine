@@ -1,10 +1,15 @@
-import type { FoodCategory } from '@/src/data/types';
+/**
+ * Reel timing. Reels stop left to right: the n-th spinning reel runs
+ * REEL_BASE_MS + n * REEL_STAGGER_MS and travels REEL_BASE_LOOPS + n full turns.
+ */
+export const REEL_BASE_MS = 1100;
+export const REEL_STAGGER_MS = 450;
+export const REEL_BASE_LOOPS = 2;
 
-/** Staggered stop delays so reels feel like a real slot machine. */
-export const REEL_STOP_DELAYS_MS: Record<FoodCategory, number> = {
-  carbs: 900,
-  protein: 1400,
-  veg: 1900,
-};
+export function reelDuration(order: number): number {
+  return REEL_BASE_MS + order * REEL_STAGGER_MS;
+}
 
-export const SPIN_TOTAL_MS = 2000;
+export function reelLoops(order: number): number {
+  return REEL_BASE_LOOPS + order;
+}

@@ -187,7 +187,7 @@
   {
     "id": "broccoli",
     "name": "Brokkoli",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "broccoli",
     "tags": [
       "vegan",
@@ -200,7 +200,7 @@
   {
     "id": "bell_pepper",
     "name": "Paprika",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "bell_pepper",
     "tags": [
       "vegan",
@@ -213,7 +213,7 @@
   {
     "id": "carrots",
     "name": "Karotten",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "carrots",
     "tags": [
       "vegan",
@@ -226,7 +226,7 @@
   {
     "id": "spinach",
     "name": "Spinat",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "spinach",
     "tags": [
       "vegan",
@@ -239,7 +239,7 @@
   {
     "id": "peas",
     "name": "Erbsen",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "peas",
     "tags": [
       "vegan",
@@ -252,7 +252,7 @@
   {
     "id": "zucchini",
     "name": "Zucchini",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "zucchini",
     "tags": [
       "vegan",
@@ -265,7 +265,7 @@
   {
     "id": "cauliflower",
     "name": "Blumenkohl",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "cauliflower",
     "tags": [
       "vegan",
@@ -278,7 +278,7 @@
   {
     "id": "lambs_lettuce",
     "name": "Feldsalat",
-    "category": "veg",
+    "category": "fiber",
     "imageKey": "lambs_lettuce",
     "tags": [
       "vegan",

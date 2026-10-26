@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
   },
   fallbackLetter: {
-    ...typography.brand,
+    ...typography.headline,
     color: colors.accent,
     fontSize: 28,
   },

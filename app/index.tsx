@@ -1,28 +1,30 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import {
-  Platform,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-  useWindowDimensions,
-} from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { GearSix } from 'phosphor-react-native/src/icons/GearSix';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppBackground } from '@/src/components/AppBackground';
+import { LockButton } from '@/src/components/LockButton';
+import { MarqueeLights } from '@/src/components/MarqueeLights';
 import { SlotReel } from '@/src/components/SlotReel';
 import { SpinButton } from '@/src/components/SpinButton';
 import { useSlotMachine } from '@/src/features/spin/useSlotMachine';
 import { loadMotionEnabled } from '@/src/sensors/motionSettings';
 import { useForwardThrust } from '@/src/sensors/useForwardThrust';
-import { colors, spacing, typography } from '@/src/theme/tokens';
-import { SLOT_ORDER } from '@/src/data/types';
+import {
+  colors,
+  gradients,
+  radii,
+  spacing,
+  typography,
+} from '@/src/theme/tokens';
+import { CATEGORY_LABELS, SLOT_ORDER } from '@/src/data/types';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
-  const { width } = useWindowDimensions();
-  const { meal, spinning, spinningSlots, spinAll, spinSlot } = useSlotMachine();
+  const { meal, locked, spinning, reelSpins, allLocked, spinAll, toggleLock } =
+    useSlotMachine();
   const [motionEnabled, setMotionEnabled] = useState(true);
 
   useFocusEffect(
@@ -44,11 +46,15 @@ export default function HomeScreen() {
   }, [spinAll, spinning]);
 
   useForwardThrust({
-    enabled: Platform.OS !== 'web' && motionEnabled && !spinning,
+    enabled: Platform.OS !== 'web' && motionEnabled && !spinning && !allLocked,
     onThrust,
   });
 
-  const compact = width < 380;
+  const spinA11yLabel = spinning
+    ? 'Dreht'
+    : allLocked
+      ? 'Alles gehalten'
+      : 'Spin, Walzen drehen';
 
   return (
     <AppBackground>
@@ -56,51 +62,90 @@ export default function HomeScreen() {
         style={[
           styles.container,
           {
-            paddingTop: insets.top + spacing.lg,
-            paddingBottom: insets.bottom + spacing.lg,
+            paddingTop: insets.top + spacing.sm,
+            paddingBottom: insets.bottom + spacing.md,
           },
         ]}>
         <View style={styles.topBar}>
-          <View style={styles.brandBlock}>
-            <Text style={styles.brand}>Food Slot</Text>
-            <Text style={styles.tagline}>
-              Drei Zutaten. Eine Mahlzeit. Überrasch dich.
-            </Text>
-          </View>
+          <Text style={styles.tagline}>Drei Zutaten. Eine Mahlzeit.</Text>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Einstellungen"
             onPress={() => router.push('/settings')}
             style={styles.iconButton}>
-            <Text style={styles.iconButtonText}>⚙</Text>
+            <GearSix size={22} color={colors.text} />
           </Pressable>
         </View>
 
-        <View style={styles.machine}>
-          <View style={styles.reels}>
-            {SLOT_ORDER.map((category) => (
-              <SlotReel
-                key={category}
-                category={category}
-                food={meal?.[category] ?? null}
-                spinning={spinningSlots[category]}
-                disabled={spinning}
-                onRespin={() => spinSlot(category)}
-              />
-            ))}
+        <View style={styles.stage}>
+          <View style={styles.cabinet}>
+            <View style={styles.marquee}>
+              <MarqueeLights active={spinning} />
+              <Text
+                style={styles.marqueeTitle}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.7}>
+                Food Slot Machine
+              </Text>
+              <MarqueeLights active={spinning} />
+            </View>
+
+            <View style={styles.inset}>
+              <View style={styles.row}>
+                {SLOT_ORDER.map((category) => (
+                  <Text
+                    key={category}
+                    style={styles.categoryLabel}
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                    minimumFontScale={0.8}>
+                    {CATEGORY_LABELS[category]}
+                  </Text>
+                ))}
+              </View>
+
+              <View style={styles.reels}>
+                {SLOT_ORDER.map((category) => (
+                  <SlotReel
+                    key={category}
+                    category={category}
+                    food={meal[category]}
+                    spin={reelSpins[category]}
+                    locked={locked[category]}
+                    disabled={spinning}
+                    onPress={() => toggleLock(category)}
+                  />
+                ))}
+              </View>
+
+              <View style={styles.row}>
+                {SLOT_ORDER.map((category) => (
+                  <View key={category} style={styles.lockCell}>
+                    <LockButton
+                      label={CATEGORY_LABELS[category]}
+                      active={locked[category]}
+                      disabled={spinning}
+                      onPress={() => toggleLock(category)}
+                    />
+                  </View>
+                ))}
+              </View>
+            </View>
           </View>
         </View>
 
         <View style={styles.footer}>
           <SpinButton
             onPress={spinAll}
-            disabled={spinning}
-            label={spinning ? 'Dreht …' : 'Drehen'}
+            disabled={spinning || allLocked}
+            label="Spin"
+            accessibilityLabel={spinA11yLabel}
           />
-          <Text style={[styles.hint, compact && styles.hintCompact]}>
+          <Text style={styles.hint}>
             {motionEnabled
-              ? 'Oder iPhone kurz nach vorne schieben'
-              : 'Bewegungsgeste ist aus — starte per Button'}
+              ? 'Tippe Spin, oder schieb das iPhone kurz nach vorne'
+              : 'Tippe Spin'}
           </Text>
         </View>
       </View>
@@ -113,24 +158,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.md,
     justifyContent: 'space-between',
+    gap: spacing.md,
   },
   topBar: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'space-between',
     gap: spacing.md,
   },
-  brandBlock: {
-    flex: 1,
-    gap: spacing.xs,
-  },
-  brand: {
-    ...typography.brand,
-    color: colors.text,
-  },
   tagline: {
-    ...typography.body,
-    color: colors.textMuted,
+    ...typography.headline,
+    color: colors.text,
+    flex: 1,
   },
   iconButton: {
     width: 44,
@@ -140,29 +179,68 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.surfaceStrong,
   },
-  iconButtonText: {
-    fontSize: 20,
-    color: colors.text,
-  },
-  machine: {
+  stage: {
     flex: 1,
     justifyContent: 'center',
-    paddingVertical: spacing.lg,
+    gap: spacing.lg,
+  },
+  cabinet: {
+    padding: spacing.xs + 2,
+    gap: spacing.xs + 2,
+    borderRadius: radii.xl,
+    backgroundImage: gradients.chrome,
+    boxShadow: '0 18px 40px rgba(0, 0, 0, 0.45)',
+  },
+  marquee: {
+    gap: spacing.xs + 2,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.sm,
+    borderRadius: radii.lg,
+    backgroundColor: colors.accent,
+    boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.35)',
+  },
+  marqueeTitle: {
+    ...typography.marquee,
+    color: colors.text,
+    textAlign: 'center',
+    lineHeight: 34,
+    textShadowColor: 'rgba(0, 0, 0, 0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 0,
+  },
+  inset: {
+    gap: spacing.xs + 2,
+    paddingHorizontal: spacing.xs + 2,
+    paddingTop: spacing.sm,
+    paddingBottom: spacing.xxs,
+    borderRadius: radii.lg,
+    backgroundColor: colors.cabinetInset,
+    boxShadow: 'inset 0 4px 12px rgba(0, 0, 0, 0.7)',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: spacing.xs,
+  },
+  categoryLabel: {
+    ...typography.label,
+    flex: 1,
+    color: colors.textMuted,
+    textAlign: 'center',
+  },
+  lockCell: {
+    flex: 1,
+    alignItems: 'center',
   },
   reels: {
     flexDirection: 'row',
-    gap: spacing.sm,
-    alignItems: 'stretch',
+    gap: spacing.xs,
   },
   footer: {
     gap: spacing.md,
   },
   hint: {
-    ...typography.body,
+    ...typography.hint,
     color: colors.textMuted,
     textAlign: 'center',
-  },
-  hintCompact: {
-    fontSize: 13,
   },
 });

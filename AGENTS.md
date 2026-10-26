@@ -4,7 +4,7 @@ This file is for future Cloud / Cursor agents continuing the project. Read it be
 
 ## Product (keep this in mind)
 
-Playful iPhone app: spin three slots (carbs, protein, vegetables) into a spontaneous **vegetarian** meal idea.
+Playful iPhone app: spin three slots (protein, carbs, fiber) into a spontaneous **vegetarian** meal idea. Not a recipe app — inspiration at the supermarket. MVP is vegetarian only; meat / vegan filters come later.
 
 - Slot machine is the primary visual and interactive focus.
 - Local-only: no backend, accounts, or cloud sync.
@@ -15,7 +15,7 @@ Playful iPhone app: spin three slots (carbs, protein, vegetables) into a spontan
 
 | Piece | Choice |
 | --- | --- |
-| Runtime | **Expo SDK 57** + TypeScript (must match App Store Expo Go) |
+| Runtime | **Expo SDK 58** + TypeScript (must match App Store Expo Go) |
 | Navigation | Expo Router — screens in **`app/`** (not `src/app/`) |
 | UI / logic | `src/components`, `src/features/spin`, `src/sensors`, `src/theme` |
 | Food data | `data/foods.csv` → `src/data/foods.json` (+ `foodImages.ts` requires) |
@@ -26,7 +26,7 @@ Playful iPhone app: spin three slots (carbs, protein, vegetables) into a spontan
 1. **Scaffold** Expo Router + TypeScript app; keep native dirs generated (no hand-edited `ios/` / `android/`).
 2. **Separate layers**: screens in `app/`, spin selection/state in `src/features/spin/`, sensors in `src/sensors/`, food catalog in `src/data/` + `data/foods.csv`.
 3. **Food catalog**: edit CSV → `npm run data:foods` → add PNG under `assets/foods/{imageKey}.png` → register `require()` in `src/data/foodImages.ts`.
-4. **Interaction**: three reels + spin-all / respin-one; DeviceMotion forward-thrust with settings toggle; button always available.
+4. **Interaction**: three reels (real strip animation) + spin-all with per-slot hold/lock; DeviceMotion forward-thrust with settings toggle; button always available.
 5. **Ship to phone via Expo Go**: LAN on the same Wi‑Fi locally; **tunnel** from a cloud VM (`npm run start:tunnel`).
 6. **SDK alignment**: when Expo Go on the phone reports a different SDK, upgrade/downgrade the project with `npx expo install` so versions match — do not invent peer versions by hand.
 
@@ -37,6 +37,8 @@ Playful iPhone app: spin three slots (carbs, protein, vegetables) into a spontan
 `app.json` intentionally has **no** `owner` and **no** `extra.eas.projectId`.
 
 Linking to EAS (`eas init` / `owner: uppercasefs-team` / a `projectId`) forced physical iPhones to require **matching Expo CLI + Expo Go login**. That broke the previous anonymous flow. Unlinking restored “scan QR / open `exp://` without CLI login”.
+
+Caveat (verified on SDK 58): even unlinked, if Expo Go on the phone is **signed in**, the CLI must be signed in to the **same** account (`npx expo login`) or the project refuses to open. Anonymous only works when Expo Go is signed out. The owner's account is `uppercasef`.
 
 - For day-to-day Expo Go testing from Cloud Agents: keep the project **unlinked**.
 - Only add EAS linkage when the human explicitly wants EAS Build / Submit / Update — and then document that Expo Go + CLI must share the same Expo account (or use a real `EXPO_TOKEN` for that account).
@@ -60,8 +62,8 @@ Linking to EAS (`eas init` / `owner: uppercasefs-team` / a `projectId`) forced p
 
 Expo breaks APIs across SDKs. Before using Expo/EAS/RN APIs:
 
-1. Read the `expo` major in `package.json` (currently **57**).
-2. Prefer versioned docs: `https://docs.expo.dev/versions/v57.0.0/`
+1. Read the `expo` major in `package.json` (currently **58**).
+2. Prefer versioned docs: `https://docs.expo.dev/versions/v58.0.0/`
 3. Index of corrections: https://docs.expo.dev/llms.txt  
    Do not answer Expo API questions from memory alone.
 
@@ -114,7 +116,17 @@ Run `typecheck` and `test:spin` before calling a task done when you touched spin
 
 ## When stuck on Expo Go
 
-1. Confirm SDK 57 vs phone Expo Go.
+1. Confirm SDK 58 vs phone Expo Go.
 2. Confirm `app.json` still has no `owner` / `projectId` (unless EAS was requested).
 3. Cloud → tunnel URL `exp://…exp.direct`; local → LAN QR.
 4. If login prompts return after an `eas init`, that is expected — either unlink again or log CLI into the same Expo account as the phone.
+
+## Figma ↔ code
+
+Figma file: https://www.figma.com/design/wZzGlIahw1eaLyipDJ1F63/Food-Slot-Machine
+
+- **Figma owns the look** (variables in "Food Slot Tokens", text styles, component visuals). Code owns behaviour.
+- Direction of sync is **Figma → code**: read variables/styles, then update `src/theme/tokens.ts`. Token names match (`color/accent` ↔ `colors.accent`).
+- Code → Figma only for **structure** (new components/screens), and only on nodes the agent created. Never edit frames the owner made, never overwrite a variable value without reading it first and asking if it differs from code.
+- Fonts: Uncut Sans (body, `assets/fonts/UncutSans-Variable.ttf`, OFL) and Modak (display, `@expo-google-fonts/modak`). The Figma plugin API cannot load Uncut Sans, so text nodes using it can't be edited by agents — leave copy edits to the owner.
+- Icons: Phosphor (`phosphor-react-native`, import per icon from `phosphor-react-native/src/icons/<Name>`).

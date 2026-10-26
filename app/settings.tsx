@@ -36,7 +36,7 @@ export default function SettingsScreen() {
             <Switch
               value={motionEnabled}
               onValueChange={toggleMotion}
-              trackColor={{ false: '#3A4A40', true: colors.accent }}
+              trackColor={{ false: colors.surfaceStrong, true: colors.accent }}
               thumbColor={colors.text}
             />
           </View>

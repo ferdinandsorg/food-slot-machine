@@ -1,9 +1,12 @@
+import { Modak_400Regular } from '@expo-google-fonts/modak';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+
+import { colors, fonts } from '@/src/theme/tokens';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -12,6 +15,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    UncutSans: require('../assets/fonts/UncutSans-Variable.ttf'),
+    Modak_400Regular,
   });
 
   useEffect(() => {
@@ -33,10 +38,10 @@ export default function RootLayout() {
       <StatusBar style="light" />
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: '#0F1A14' },
-          headerTintColor: '#FFF8EB',
-          headerTitleStyle: { fontWeight: '600' },
-          contentStyle: { backgroundColor: '#0F1A14' },
+          headerStyle: { backgroundColor: colors.bgBottom },
+          headerTintColor: colors.text,
+          headerTitleStyle: { fontFamily: fonts.body, fontWeight: '700' },
+          contentStyle: { backgroundColor: colors.bgBottom },
         }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen
