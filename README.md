@@ -10,6 +10,8 @@ Playful iPhone app that spins three food slots — carbs, protein, and vegetable
 - Motion spin via `expo-sensors` DeviceMotion (forward thrust) + button fallback
 - No backend, accounts, or cloud sync
 
+> **Cloud / Cursor agents:** read [`AGENTS.md`](./AGENTS.md) first — how the MVP was built, Expo Go vs EAS gotchas, and architecture boundaries.
+
 ## Project structure
 
 ```
@@ -36,17 +38,10 @@ npm start
 
 ### iPhone im gleichen WLAN (empfohlen)
 
-**Wichtig (physisches iPhone):** Expo Go und Expo CLI müssen mit dem **selben kostenlosen Expo-Account** eingeloggt sein. Sonst erscheint: *You need to be signed in to Expo Go and Expo CLI…*
+Dieses Projekt ist **nicht** an ein EAS-Konto gebunden (`owner` / `projectId` fehlen absichtlich). Expo Go funktioniert deshalb **ohne Login** — wie früher, einfach QR scannen.
 
-1. Kostenlosen Account anlegen: https://expo.dev/signup  
-2. In **Expo Go** oben rechts aufs Account-Icon tippen und einloggen.  
-3. Am Computer einloggen:
-   ```bash
-   npx expo login
-   npx expo whoami   # sollte denselben Account zeigen
-   ```
-4. Mac/PC und iPhone im **gleichen WLAN** (kein VPN / kein Gastnetz, das Clients trennt).
-5. Dev-Server starten:
+1. Mac/PC und iPhone im **gleichen WLAN** (kein VPN / kein Gastnetz, das Clients trennt).
+2. Dev-Server starten:
    ```bash
    npm start
    ```
@@ -54,7 +49,9 @@ npm start
    ```bash
    npm run start:lan
    ```
-6. QR-Code mit der Kamera bzw. in Expo Go scannen — oder die `exp://…`-URL öffnen.
+3. QR-Code mit der Kamera bzw. in Expo Go scannen — oder die `exp://…`-URL öffnen.
+
+> Wenn du später `eas init` / `owner` + `extra.eas.projectId` wieder setzt, brauchen Expo Go und die CLI denselben Expo-Account.
 
 Bewegungsgesten funktionieren nur am echten iPhone (nicht im Simulator).
 
