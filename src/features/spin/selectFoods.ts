@@ -9,10 +9,7 @@ function randomIndex(length: number): number {
 }
 
 /** Pick a random enabled food in a category, optionally avoiding the previous id. */
-export function pickFood(
-  category: FoodCategory,
-  avoidId?: string,
-): Food {
+export function pickFood(category: FoodCategory, avoidId?: string): Food {
   const pool = getFoodsByCategory(category);
   if (pool.length === 0) {
     throw new Error(`No enabled foods for category: ${category}`);

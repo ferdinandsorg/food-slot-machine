@@ -1,7 +1,14 @@
-import { LockSimple } from 'phosphor-react-native/src/icons/LockSimple';
-import { LockSimpleOpen } from 'phosphor-react-native/src/icons/LockSimpleOpen';
+import { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
+import { SFIcon } from './SFIcon';
 import { colors } from '@/src/theme/tokens';
 
 type Props = {
@@ -11,9 +18,26 @@ type Props = {
   onPress: () => void;
 };
 
-/** Quiet hold toggle under a reel: open lock = free, filled lock = held. */
+/** Quiet hold toggle under a reel: SF Symbol lock.open = free, lock.fill = held. */
 export function LockButton({ label, active, disabled, onPress }: Props) {
-  const Icon = active ? LockSimple : LockSimpleOpen;
+  const scale = useSharedValue(1);
+  const mounted = useRef(false);
+
+  // Small click-bounce whenever the hold state flips.
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    scale.value = withSequence(
+      withTiming(1.25, { duration: 90 }),
+      withSpring(1, { damping: 10, stiffness: 300 }),
+    );
+  }, [active, scale]);
+
+  const iconStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
 
   return (
     <Pressable
@@ -28,11 +52,14 @@ export function LockButton({ label, active, disabled, onPress }: Props) {
         pressed && styles.pressed,
         disabled && !active && styles.disabled,
       ]}>
-      <Icon
-        size={24}
-        weight={active ? 'fill' : 'regular'}
-        color={active ? colors.highlight : colors.textMuted}
-      />
+      <Animated.View style={iconStyle}>
+        <SFIcon
+          name={active ? 'lock' : 'lockOpen'}
+          size={22}
+          weight={active ? 'semibold' : 'regular'}
+          color={active ? colors.highlight : colors.textMuted}
+        />
+      </Animated.View>
     </Pressable>
   );
 }

@@ -5,6 +5,8 @@ export type Food = {
   name: string;
   category: FoodCategory;
   imageKey: string;
+  /** System emoji shown on the reel; foods without one fall back to `imageKey` art. */
+  emoji?: string;
   tags: string[];
   enabled: boolean;
 };

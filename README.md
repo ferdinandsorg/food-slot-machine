@@ -115,14 +115,17 @@ npm run typecheck
 
 - Three animated reels with local food names + placeholder art
 - Real reel strips that run through and snap in place
-- Hold (lock) a slot you already have, spin the rest
+- Hold (lock) a slot you already have by tapping it, spin the rest
+- Swipe a single reel up or down to spin just that reel
+- Save the current combination (bookmark key next to Spin, stored on device); list and delete saved ones on the Gespeichert screen
+- Game feel: tick per food passing the payline, stop thud on impact, result celebration (marquee chase, payline flash, strongest haptic), shake when Spin is refused
+- Respects iOS Reduce Motion; vibration toggle in Settings
 - Forward-thrust gesture (toggle in Settings) + always-on button
 - Motion debug screen for threshold tuning
 - Vegetarian starter catalog (24 foods)
 
 ## Adding a food
 
-1. Add a row to `data/foods.csv`
+1. Add a row to `data/foods.csv` — put a Unicode emoji in the `emoji` column if one fits (rendered as Apple emoji on iOS)
 2. Run `npm run data:foods`
-3. Drop `assets/foods/<image_key>.png`
-4. Register it in `src/data/foodImages.ts`
+3. No fitting emoji? Leave `emoji` empty, drop `assets/foods/<image_key>.png` and register it in `src/data/foodImages.ts`

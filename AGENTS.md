@@ -70,7 +70,7 @@ Expo breaks APIs across SDKs. Before using Expo/EAS/RN APIs:
 ## Architecture map
 
 ```
-app/                     # Expo Router screens (_layout, index, settings, motion-debug)
+app/                     # Expo Router screens (_layout, index, saved, settings, motion-debug)
 src/
   components/            # SlotReel, SpinButton, FoodImage, AppBackground
   features/spin/         # selection logic, timing, useSlotMachine (+ tests)
@@ -128,5 +128,5 @@ Figma file: https://www.figma.com/design/wZzGlIahw1eaLyipDJ1F63/Food-Slot-Machin
 - **Figma owns the look** (variables in "Food Slot Tokens", text styles, component visuals). Code owns behaviour.
 - Direction of sync is **Figma → code**: read variables/styles, then update `src/theme/tokens.ts`. Token names match (`color/accent` ↔ `colors.accent`).
 - Code → Figma only for **structure** (new components/screens), and only on nodes the agent created. Never edit frames the owner made, never overwrite a variable value without reading it first and asking if it differs from code.
-- Fonts: Uncut Sans (body, `assets/fonts/UncutSans-Variable.ttf`, OFL) and Modak (display, `@expo-google-fonts/modak`). The Figma plugin API cannot load Uncut Sans, so text nodes using it can't be edited by agents — leave copy edits to the owner.
-- Icons: Phosphor (`phosphor-react-native`, import per icon from `phosphor-react-native/src/icons/<Name>`).
+- Fonts: Uncut Sans (body, `assets/fonts/UncutSans-Variable.ttf`, OFL) for everything incl. headlines, with stylistic set ss02 (alternate Y/y) via `fontVariant: ["stylistic-two"]`. The Figma plugin API cannot load Uncut Sans, so text nodes using it can't be edited by agents — leave copy edits to the owner.
+- Icons: Apple SF Symbols via `expo-symbols`, wrapped in `src/components/SFIcon.tsx` (Material fallback on Android/web). Add new icons to the map there.

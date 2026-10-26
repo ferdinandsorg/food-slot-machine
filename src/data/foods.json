@@ -4,6 +4,7 @@
     "name": "Kartoffeln",
     "category": "carbs",
     "imageKey": "potato",
+    "emoji": "🥔",
     "tags": [
       "vegan",
       "gluten_free",
@@ -16,6 +17,7 @@
     "name": "Reis",
     "category": "carbs",
     "imageKey": "rice",
+    "emoji": "🍚",
     "tags": [
       "vegan",
       "gluten_free",
@@ -28,6 +30,7 @@
     "name": "Haferflocken",
     "category": "carbs",
     "imageKey": "oats",
+    "emoji": "🥣",
     "tags": [
       "vegan",
       "vegetarian"
@@ -39,6 +42,7 @@
     "name": "Vollkornnudeln",
     "category": "carbs",
     "imageKey": "whole_wheat_pasta",
+    "emoji": "🍝",
     "tags": [
       "vegetarian"
     ],
@@ -71,6 +75,7 @@
     "name": "Süßkartoffel",
     "category": "carbs",
     "imageKey": "sweet_potato",
+    "emoji": "🍠",
     "tags": [
       "vegan",
       "gluten_free",
@@ -83,6 +88,7 @@
     "name": "Polenta",
     "category": "carbs",
     "imageKey": "polenta",
+    "emoji": "🌽",
     "tags": [
       "vegan",
       "gluten_free",
@@ -119,6 +125,7 @@
     "name": "Bohnen",
     "category": "protein",
     "imageKey": "beans",
+    "emoji": "🫘",
     "tags": [
       "vegan",
       "gluten_free",
@@ -155,6 +162,7 @@
     "name": "Eier",
     "category": "protein",
     "imageKey": "eggs",
+    "emoji": "🥚",
     "tags": [
       "gluten_free",
       "vegetarian"
@@ -189,6 +197,7 @@
     "name": "Brokkoli",
     "category": "fiber",
     "imageKey": "broccoli",
+    "emoji": "🥦",
     "tags": [
       "vegan",
       "gluten_free",
@@ -202,6 +211,7 @@
     "name": "Paprika",
     "category": "fiber",
     "imageKey": "bell_pepper",
+    "emoji": "🫑",
     "tags": [
       "vegan",
       "gluten_free",
@@ -215,6 +225,7 @@
     "name": "Karotten",
     "category": "fiber",
     "imageKey": "carrots",
+    "emoji": "🥕",
     "tags": [
       "vegan",
       "gluten_free",
@@ -228,6 +239,7 @@
     "name": "Spinat",
     "category": "fiber",
     "imageKey": "spinach",
+    "emoji": "🥬",
     "tags": [
       "vegan",
       "gluten_free",
@@ -241,6 +253,7 @@
     "name": "Erbsen",
     "category": "fiber",
     "imageKey": "peas",
+    "emoji": "🫛",
     "tags": [
       "vegan",
       "gluten_free",
@@ -254,6 +267,7 @@
     "name": "Zucchini",
     "category": "fiber",
     "imageKey": "zucchini",
+    "emoji": "🥒",
     "tags": [
       "vegan",
       "gluten_free",
