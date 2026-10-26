@@ -10,6 +10,8 @@ Playful iPhone app that spins three food slots — carbs, protein, and vegetable
 - Motion spin via `expo-sensors` DeviceMotion (forward thrust) + button fallback
 - No backend, accounts, or cloud sync
 
+> **Cloud / Cursor agents:** read [`AGENTS.md`](./AGENTS.md) first — how the MVP was built, Expo Go vs EAS gotchas, and architecture boundaries.
+
 ## Project structure
 
 ```
