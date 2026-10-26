@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
     borderRadius: radii.sm + 2,
-    backgroundImage: `linear-gradient(to right, #CFC8DA 0%, ${colors.reelFace} 22%, #FFFFFF 50%, ${colors.reelFace} 78%, #CFC8DA 100%)`,
+    backgroundImage: gradients.reelFace,
   },
   foodName: {
     ...typography.foodName,

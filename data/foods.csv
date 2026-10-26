@@ -13,7 +13,7 @@ amaranth,Amaranth,carbs,amaranth,,vegan;gluten_free;vegetarian,true
 bread,Brot,carbs,bread,🍞,vegetarian,true
 gnocchi,Gnocchi,carbs,gnocchi,,vegetarian,true
 spaetzle,Spätzle,carbs,spaetzle,,vegetarian,true
-potato_dumplings,Kartoffelknödel,carbs,potato_dumplings,,vegetarian,true
+dumplings,Knödel,carbs,dumplings,,vegetarian,true
 lentils,Linsen,protein,lentils,,vegan;gluten_free;vegetarian,true
 chickpeas,Kichererbsen,protein,chickpeas,,vegan;gluten_free;vegetarian,true
 beans,Bohnen,protein,beans,🫘,vegan;gluten_free;vegetarian,true

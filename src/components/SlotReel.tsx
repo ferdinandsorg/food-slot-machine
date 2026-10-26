@@ -37,9 +37,13 @@ import {
   typography,
 } from '@/src/theme/tokens';
 
-export const REEL_ITEM_HEIGHT = 140;
-/** Center item fully visible, neighbours peek in above and below. */
-export const REEL_WINDOW_HEIGHT = Math.round(REEL_ITEM_HEIGHT * 1.65);
+/**
+ * Pitch between foods on the strip. Larger than the window, so at rest only
+ * the landed food is visible — no cut-off neighbours above and below.
+ */
+export const REEL_ITEM_HEIGHT = 244;
+/** Visible reel window; the strip pitch above keeps neighbours outside it. */
+export const REEL_WINDOW_HEIGHT = 231;
 
 /** Strip copies: one buffer above + enough turns for the longest spin. */
 const STRIP_COPIES = 6;
@@ -121,7 +125,9 @@ export function SlotReel({
   }, [popKey]);
   // Strip speed (foods per second) for the motion-blur fade.
   const speed = useSharedValue(0);
-  const lastPosition = useSharedValue(position.value);
+  // Seeded from plain values: reading `position.value` here would run on every
+  // render and flood Expo Go with Reanimated warnings.
+  const lastPosition = useSharedValue(count + indexOf(food));
 
   useFrameCallback((frame) => {
     const dt = frame.timeSincePreviousFrame ?? 16;
@@ -242,8 +248,6 @@ export function SlotReel({
   }, [locked, held]);
 
   const stripStyle = useAnimatedStyle(() => ({
-    // Fade the foods at full speed — reads as motion blur and hides strobing.
-    opacity: interpolate(speed.value, [8, 26], [1, 0.4], 'clamp'),
     transform: [
       {
         translateY:
@@ -255,6 +259,12 @@ export function SlotReel({
   }));
   const popStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pop.value }],
+  }));
+  // Veil over the foods at full speed — reads as motion blur and hides
+  // strobing. (Not opacity on the strip: that would isolate the images'
+  // multiply blend and bring back their white backgrounds.)
+  const veilStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(speed.value, [8, 26], [0, 0.6], 'clamp'),
   }));
   const windowStyle = useAnimatedStyle(() => ({
     opacity: windowOpacity.value,
@@ -317,6 +327,10 @@ export function SlotReel({
               </View>
             ))}
           </Animated.View>
+          <Animated.View
+            pointerEvents="none"
+            style={[styles.veil, veilStyle]}
+          />
           <View pointerEvents="none" style={styles.curve} />
           <Animated.View
             pointerEvents="none"
@@ -386,7 +400,7 @@ const styles = StyleSheet.create({
     borderRadius: radii.md - FRAME,
     backgroundColor: colors.reelFace,
     // Satin metal drum: brightest across the payline.
-    backgroundImage: `linear-gradient(to right, #CFC8DA 0%, ${colors.reelFace} 22%, #FFFFFF 50%, ${colors.reelFace} 78%, #CFC8DA 100%)`,
+    backgroundImage: gradients.reelFace,
   },
   item: {
     height: REEL_ITEM_HEIGHT,
@@ -399,6 +413,10 @@ const styles = StyleSheet.create({
     ...typography.foodName,
     color: colors.ink,
     textAlign: 'center',
+  },
+  veil: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: colors.reelFace,
   },
   curve: {
     ...StyleSheet.absoluteFill,

@@ -6,7 +6,7 @@ Playful iPhone app that spins three food slots — protein, carbs and fiber (Bal
 
 - **Expo (SDK 58) + TypeScript + Expo Router** — matches current App Store Expo Go
 - Local food catalog (`data/foods.csv` → `src/data/foods.json`)
-- Local illustrations in `assets/foods/`
+- Food images from Ingredient Atlas (CC0), AI cut-out to transparent WebP in `assets/foods/atlas/`, emoji as fallback
 - Motion spin via `expo-sensors` DeviceMotion (forward thrust) + button fallback
 - No backend, accounts, or cloud sync
 
@@ -126,6 +126,7 @@ npm run typecheck
 
 ## Adding a food
 
-1. Add a row to `data/foods.csv` — put a Unicode emoji in the `emoji` column if one fits (rendered as Apple emoji on iOS)
+1. Add a row to `data/foods.csv` (optional `emoji` = fallback)
 2. Run `npm run data:foods`
-3. No fitting emoji? Leave `emoji` empty, drop `assets/foods/<image_key>.png` and register it in `src/data/foodImages.ts`
+3. Image: find the item in [Ingredient Atlas](https://github.com/ionmesca/ingredient-atlas) (CC0), download its 512px WebP into `assets/foods/atlas/<image_key>.webp`, run `scripts/atlas-cutout.py` (needs `rembg[cpu]` + Pillow) to cut it out without shadow, add the slug to `assets/foods/atlas/SOURCE.tsv` and a `require()` in `src/data/foodImages.ts`
+4. Display order: atlas image → emoji → grey SF Symbol placeholder

@@ -165,10 +165,10 @@
     "enabled": true
   },
   {
-    "id": "potato_dumplings",
-    "name": "Kartoffelknödel",
+    "id": "dumplings",
+    "name": "Knödel",
     "category": "carbs",
-    "imageKey": "potato_dumplings",
+    "imageKey": "dumplings",
     "tags": [
       "vegetarian"
     ],

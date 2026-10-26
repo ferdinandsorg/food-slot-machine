@@ -55,8 +55,10 @@ export const gradients = {
   well: 'linear-gradient(to bottom, #3B3248 0%, #6E6482 55%, #D9D2E4 100%)',
   /** Darkens reel top and bottom so the strip reads as a metal drum. */
   reelCurve:
-    // Light band sits high on the drum (lit from above), per Figma v2.
-    'linear-gradient(to bottom, rgba(21,16,29,0.92) 0%, rgba(21,16,29,0.35) 20%, rgba(255,255,255,0.18) 33%, rgba(255,255,255,0.05) 62%, rgba(21,16,29,0.35) 80%, rgba(21,16,29,0.92) 100%)',
+    // Even, lighter curvature with a calm middle band, per Figma v2 "Reel Idle".
+    'linear-gradient(to bottom, rgba(21,16,29,0.7) 0%, rgba(21,16,29,0.25) 20%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.05) 60%, rgba(21,16,29,0.25) 80%, rgba(21,16,29,0.7) 100%)',
+  /** Reel face: bright centre falling off to lilac-grey edges (Figma v2). */
+  reelFace: `radial-gradient(ellipse 77% 97% at 50% 50%, #FFFFFF 0%, ${colors.reelFace} 62%, #CFC8DA 100%)`,
   /** Spin cap: soft dome in the accent blue, lighter where the light hits. */
   spinCap: `radial-gradient(ellipse 90% 90% at 42% 32%, ${colors.accentLight} 0%, ${colors.accent} 62%, ${colors.accentPressed} 100%)`,
   /** Satin chrome bezel ring around the spin cap. */

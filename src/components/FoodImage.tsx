@@ -2,17 +2,31 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { SFIcon } from './SFIcon';
 import { getFoodImage } from '@/src/data/foodImages';
-import { colors, radii } from '@/src/theme/tokens';
+import { colors } from '@/src/theme/tokens';
 
 type Props = {
   imageKey: string;
   name: string;
-  /** System emoji; takes precedence over the image asset. */
+  /** System emoji; used when the food has no image. */
   emoji?: string;
   size?: number;
 };
 
+/** Food art in priority order: Ingredient Atlas image → emoji → grey SF Symbol. */
 export function FoodImage({ imageKey, name, emoji, size = 96 }: Props) {
+  const source = getFoodImage(imageKey);
+
+  if (source) {
+    return (
+      <Image
+        source={source}
+        style={{ width: size, height: size }}
+        resizeMode="contain"
+        accessibilityLabel={name}
+      />
+    );
+  }
+
   if (emoji) {
     return (
       <View
@@ -29,34 +43,20 @@ export function FoodImage({ imageKey, name, emoji, size = 96 }: Props) {
     );
   }
 
-  const source = getFoodImage(imageKey);
-
-  if (!source) {
-    // No emoji and no art yet: quiet grey SF Symbol placeholder.
-    return (
-      <View
-        style={[
-          styles.placeholder,
-          { width: size * 0.78, height: size * 0.78, margin: size * 0.11 },
-        ]}
-        accessibilityLabel={name}>
-        <SFIcon
-          name="foodPlaceholder"
-          size={size * 0.34}
-          weight="medium"
-          color={colors.inkMuted}
-        />
-      </View>
-    );
-  }
-
   return (
-    <Image
-      source={source}
-      style={{ width: size, height: size, borderRadius: radii.md }}
-      resizeMode="contain"
-      accessibilityLabel={name}
-    />
+    <View
+      style={[
+        styles.placeholder,
+        { width: size * 0.78, height: size * 0.78, margin: size * 0.11 },
+      ]}
+      accessibilityLabel={name}>
+      <SFIcon
+        name="foodPlaceholder"
+        size={size * 0.34}
+        weight="medium"
+        color={colors.inkMuted}
+      />
+    </View>
   );
 }
 
@@ -70,10 +70,6 @@ const styles = StyleSheet.create({
   },
   emoji: {
     textAlign: 'center',
-    // Soft contact shadow so the glyph sits on the drum instead of floating.
-    textShadowColor: 'rgba(29, 24, 38, 0.25)',
-    textShadowOffset: { width: 0, height: 3 },
-    textShadowRadius: 4,
   },
   placeholder: {
     alignItems: 'center',

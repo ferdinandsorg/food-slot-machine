@@ -206,8 +206,8 @@ export default function HomeScreen() {
           </View>
           <Text style={styles.hint}>
             {motionEnabled
-              ? 'Tippe Spin, oder schieb das iPhone kurz nach vorne'
-              : 'Tippe Spin'}
+              ? 'Drück den Knopf – oder kipp das iPhone kurz nach vorne'
+              : 'Drück den Knopf, um zu drehen'}
           </Text>
         </View>
       </View>
