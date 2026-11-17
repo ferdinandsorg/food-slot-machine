@@ -44,7 +44,8 @@
     "test:spin": "tsx src/features/spin/selectFoods.test.ts",
     "data:foods": "tsx scripts/csv-to-json.ts",
     "data:report": "tsx scripts/pairing-report.ts",
-    "data:review": "tsx scripts/review-server.ts"
+    "data:review": "tsx scripts/review-server.ts",
+    "web:landing": "tsx scripts/build-landing.ts"
   },
   "private": true
 }

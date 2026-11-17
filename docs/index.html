@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Slot Machine</title>
+<meta name="description" content="Keine Idee fürs Essen? Dreh am Automaten: drei Zutaten, eine vegetarische Mahlzeit.">
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<style>
+  @font-face { font-family: 'Uncut Sans'; src: url('assets/UncutSans-Variable.ttf') format('truetype'); font-weight: 300 800; font-display: swap; }
+  :root {
+    --bg-top: #B7A9D6; --bg-mid: #6C5E8F; --bg-bottom: #1E1729;
+    --accent: #8B5CF6; --accent-light: #BBA6FF;
+    --text: #F6F2FB; --muted: rgba(246, 242, 251, 0.66); --ink: #1D1826;
+    --inset: #15101D; --reel-face: #F2EEF7;
+    --reel-h: 148px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 48px 16px 32px; color: var(--text);
+    font-family: 'Uncut Sans', system-ui, sans-serif; font-feature-settings: 'ss02';
+    background:
+      radial-gradient(ellipse 90% 60% at 20% 8%, rgba(236,226,255,0.55) 0%, rgba(236,226,255,0) 70%),
+      radial-gradient(ellipse 120% 70% at 50% 110%, rgba(10,6,16,0.75) 0%, rgba(10,6,16,0) 65%),
+      linear-gradient(to bottom, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+    background-attachment: fixed;
+    -webkit-user-select: none; user-select: none;
+  }
+  main { display: flex; flex-direction: column; align-items: center; gap: 28px; flex: 1; justify-content: center; width: 100%; }
+
+  /* Cabinet: rounded lilac metal block lit from above. */
+  .cabinet {
+    width: min(320px, 100%); padding: 7px; border-radius: 26px; cursor: pointer;
+    background: linear-gradient(to bottom, #F3EFF8 0%, #CFC7DC 22%, #A79DBA 60%, #7D7393 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 60px rgba(14, 9, 22, 0.55), 0 0 0 0 rgba(139, 92, 246, 0);
+    transition: box-shadow 0.5s ease;
+  }
+  .cabinet.glow { box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 60px rgba(14, 9, 22, 0.55), 0 0 0 3px rgba(187, 166, 255, 0.9), 0 0 48px 6px rgba(139, 92, 246, 0.55); }
+  .marquee {
+    height: 50px; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(to bottom, #3A2F4C 0%, #2A2138 55%, #1C1526 100%);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset;
+    font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0;
+  }
+  .well { margin-top: 6px; padding: 10px 6px 6px; border-radius: 20px; background: var(--inset); }
+  .labels, .reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .labels span { text-align: center; font-size: 7.5px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: var(--muted); padding-bottom: 7px; }
+  .reel {
+    position: relative; height: var(--reel-h); overflow: hidden; border-radius: 11px;
+    border: 1.5px solid rgba(246, 242, 251, 0.9);
+    background: radial-gradient(ellipse 77% 97% at 50% 50%, #FFFFFF 0%, var(--reel-face) 62%, #CFC8DA 100%);
+  }
+  /* Drum curvature on top of the strip. */
+  .reel::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(21,16,29,0.7) 0%, rgba(21,16,29,0.25) 20%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.05) 60%, rgba(21,16,29,0.25) 80%, rgba(21,16,29,0.7) 100%);
+  }
+  .strip { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
+  .item { height: var(--reel-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .item img, .item .emoji { width: 58px; height: 58px; object-fit: contain; }
+  .item .emoji { font-size: 44px; line-height: 58px; text-align: center; }
+  .item span { font-size: 11px; font-weight: 700; color: var(--ink); text-align: center; padding: 0 4px; }
+  .spinning .item img { filter: blur(0.8px); }
+  .reel.pop { animation: pop 0.32s ease-out; }
+  @keyframes pop { 50% { transform: scale(1.04); } }
+
+  .hint { margin: -12px 0 0; font-size: 13px; color: var(--muted); text-align: center; }
+  .hint kbd { font: inherit; font-weight: 600; color: var(--text); padding: 1px 7px; border-radius: 6px; border: 1px solid rgba(246,242,251,0.35); }
+
+  /* Store button, disabled until the App Store link exists. */
+  .store {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 200px; height: 58px; padding: 0 24px; border-radius: 16px;
+    background: #000; color: #fff; text-decoration: none; line-height: 1.1;
+    box-shadow: 0 10px 28px rgba(10, 6, 16, 0.45); border: 1px solid rgba(255,255,255,0.18);
+  }
+  .store[aria-disabled="true"] { background: rgba(246, 242, 251, 0.12); color: rgba(246, 242, 251, 0.5); border-color: rgba(246, 242, 251, 0.18); box-shadow: none; }
+  .store[aria-disabled="true"] small { color: rgba(246, 242, 251, 0.5); }
+  .store small { font-size: 11px; letter-spacing: 0.4px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+  .store strong { font-size: 20px; font-weight: 600; }
+  .store[aria-disabled="true"] { cursor: default; }
+
+  footer { margin-top: 40px; display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--muted); text-decoration: none; }
+  footer a:hover { color: var(--text); }
+  /* Bigger machine on larger screens. */
+  @media (min-width: 700px) and (min-height: 760px) {
+    :root { --reel-h: 196px; }
+    .cabinet { width: 420px; padding: 9px; border-radius: 32px; }
+    .marquee { height: 64px; border-radius: 25px; font-size: 22px; }
+    .well { margin-top: 8px; padding: 13px 8px 8px; border-radius: 25px; }
+    .labels, .reels { gap: 7px; }
+    .labels span { font-size: 10px; letter-spacing: 1.2px; padding-bottom: 9px; }
+    .reel { border-radius: 14px; }
+    .item { gap: 10px; }
+    .item img, .item .emoji { width: 78px; height: 78px; }
+    .item .emoji { font-size: 58px; line-height: 78px; }
+    .item span { font-size: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .cabinet, .reel.pop { transition: none; animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="cabinet" id="machine" role="button" tabindex="0" aria-label="Food Slot Machine – neue Kombination drehen">
+    <div class="marquee">Food Slot Machine</div>
+    <div class="well">
+      <div class="labels"><span>Kohlenhydrate</span><span>Protein</span><span>Ballaststoffe</span></div>
+      <div class="reels">
+        <div class="reel" data-category="carbs"><div class="strip"></div></div>
+        <div class="reel" data-category="protein"><div class="strip"></div></div>
+        <div class="reel" data-category="fiber"><div class="strip"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="hint" id="hint"><kbd>Leertaste</kbd> für eine neue Kombination</p>
+
+  <!-- When the app is live: make this an <a href="https://apps.apple.com/app/id6827292049"> and drop aria-disabled. -->
+  <span class="store" aria-disabled="true">
+    <small>Coming soon</small>
+    <strong>App Store</strong>
+  </span>
+</main>
+
+<footer><a href="https://ferdinands.org">© 2026 Ferdinand Sorg</a><a href="privacy/">Datenschutz</a></footer>
+
+<script src="assets/foods.js"></script>
+<script>
+  const { foods, avoid } = window.FOOD_SLOT;
+  const SLOTS = ['carbs', 'protein', 'fiber'];
+  const byCategory = Object.fromEntries(SLOTS.map((c) => [c, foods.filter((f) => f.category === c)]));
+  const avoidSet = new Set(avoid.flatMap(([a, b]) => [`${a}|${b}`, `${b}|${a}`]));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reels = [...document.querySelectorAll('.reel')];
+  const machine = document.getElementById('machine');
+  const reelHeight = () => reels[0].clientHeight;
+
+  if (matchMedia('(hover: none)').matches) {
+    document.getElementById('hint').textContent = 'Tippen für eine neue Kombination';
+  }
+
+  const pick = (list, not) => {
+    const pool = list.filter((f) => f.id !== not?.id);
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
+  const fits = (m) => !avoidSet.has(`${m[0].id}|${m[1].id}`) && !avoidSet.has(`${m[0].id}|${m[2].id}`) && !avoidSet.has(`${m[1].id}|${m[2].id}`);
+
+  function pickMeal(prev) {
+    // Same rule as the app: redraw until no avoided pair lands together.
+    let meal;
+    for (let i = 0; i < 50; i++) {
+      meal = SLOTS.map((c, n) => pick(byCategory[c], prev?.[n]));
+      if (fits(meal)) break;
+    }
+    return meal;
+  }
+
+  const itemHtml = (f) =>
+    `<div class="item">${f.image ? `<img src="${f.image}" alt="">` : `<div class="emoji">${f.emoji ?? '🍽️'}</div>`}<span>${f.name}</span></div>`;
+
+  let current = null;
+  let spinning = false;
+
+  function spin() {
+    if (spinning) return;
+    spinning = true;
+    machine.classList.remove('glow');
+    const next = pickMeal(current);
+    const h = reelHeight();
+    let done = 0;
+
+    reels.forEach((reel, n) => {
+      const strip = reel.querySelector('.strip');
+      const list = byCategory[SLOTS[n]];
+      const filler = reduced ? 0 : 10 + n * 5;
+      const items = [current?.[n] ?? pick(list)];
+      for (let i = 0; i < filler; i++) items.push(pick(list, items[items.length - 1]));
+      items.push(next[n]);
+
+      // Reels run downward: the new food comes in from the top.
+      items.reverse();
+      strip.innerHTML = items.map(itemHtml).join('');
+      strip.style.transition = 'none';
+      strip.style.transform = `translateY(${-(items.length - 1) * h}px)`;
+      void strip.offsetHeight;
+
+      const duration = reduced ? 0 : 1050 + n * 320;
+      strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.62, 0.22, 1.02)`;
+      strip.style.transform = 'translateY(0)';
+      reel.classList.toggle('spinning', !reduced);
+
+      const settle = () => {
+        reel.classList.remove('spinning');
+        strip.innerHTML = itemHtml(next[n]);
+        strip.style.transition = 'none';
+        strip.style.transform = 'translateY(0)';
+        reel.classList.remove('pop'); void reel.offsetWidth;
+        setTimeout(() => reel.classList.add('pop'), n * 90);
+        if (++done === reels.length) {
+          current = next;
+          spinning = false;
+          machine.classList.add('glow');
+          setTimeout(() => machine.classList.remove('glow'), 1100);
+        }
+      };
+      if (duration === 0) settle(); else setTimeout(settle, duration + 20);
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') { e.preventDefault(); spin(); }
+  });
+  machine.addEventListener('click', spin);
+  machine.addEventListener('keydown', (e) => { if (e.key === 'Enter') spin(); });
+
+  // Start with a spin once the images are cached.
+  Promise.all(foods.filter((f) => f.image).map((f) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = f.image; })))
+    .then(() => setTimeout(spin, 250));
+  reels.forEach((reel, n) => { reel.querySelector('.strip').innerHTML = itemHtml(byCategory[SLOTS[n]][0]); });
+</script>
+</body>
+</html>
