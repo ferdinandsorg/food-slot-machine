@@ -7,111 +7,70 @@
 <link rel="icon" href="../assets/icon.png">
 <style>
   @font-face { font-family: 'Uncut Sans'; src: url('../assets/UncutSans-Variable.ttf') format('truetype'); font-weight: 300 800; font-display: swap; }
-  :root {
-    --bg-top: #B7A9D6; --bg-mid: #6C5E8F; --bg-bottom: #1E1729;
-    --accent-light: #BBA6FF; --text: #F6F2FB; --muted: rgba(246, 242, 251, 0.66);
-    --ink: #1D1826; --inset: #15101D; --reel-face: #F2EEF7;
-  }
-  * { box-sizing: border-box; }
+  :root { --text: #FFFFFF; --muted: rgba(255, 255, 255, 0.85); --line: rgba(255, 255, 255, 0.25); }
   body {
-    margin: 0; min-height: 100vh; padding: 40px 16px 32px; color: var(--text);
-    font: 16px/1.65 'Uncut Sans', system-ui, sans-serif; font-feature-settings: 'ss02';
+    margin: 0; min-height: 100vh; color: var(--text);
+    font: 17px/1.6 'Uncut Sans', system-ui, sans-serif; font-feature-settings: 'ss02';
     background:
       radial-gradient(ellipse 90% 60% at 20% 8%, rgba(236,226,255,0.55) 0%, rgba(236,226,255,0) 70%),
       radial-gradient(ellipse 120% 70% at 50% 110%, rgba(10,6,16,0.75) 0%, rgba(10,6,16,0) 65%),
-      linear-gradient(to bottom, var(--bg-top) 0%, var(--bg-mid) 48%, var(--bg-bottom) 100%);
+      linear-gradient(to bottom, #B7A9D6 0%, #6C5E8F 48%, #1E1729 100%);
     background-attachment: fixed;
-    display: flex; flex-direction: column; align-items: center;
+    text-shadow: 0 1px 3px rgba(30, 23, 41, 0.35);
   }
-  .back { align-self: center; width: min(720px, 100%); margin-bottom: 16px; font-size: 14px; font-weight: 600; }
-  .back a { color: var(--ink); text-decoration: none; opacity: 0.75; }
-  .back a:hover { opacity: 1; }
-
-  /* Same metal cabinet as the slot machine, with the text in its dark well. */
-  .cabinet {
-    width: min(720px, 100%); padding: 9px; border-radius: 32px;
-    background: linear-gradient(to bottom, #F3EFF8 0%, #CFC7DC 22%, #A79DBA 60%, #7D7393 100%);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 60px rgba(14, 9, 22, 0.55);
-  }
-  .marquee {
-    min-height: 64px; padding: 10px 20px; border-radius: 25px; text-align: center;
-    display: flex; flex-direction: column; justify-content: center;
-    background: linear-gradient(to bottom, #3A2F4C 0%, #2A2138 55%, #1C1526 100%);
-    box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset;
-  }
-  h1 { margin: 0; font-size: 22px; font-weight: 700; text-transform: uppercase; line-height: 1.2; }
-  .meta { margin: 4px 0 0; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
-  .well { margin-top: 8px; padding: 28px 32px 32px; border-radius: 25px; background: var(--inset); }
-
-  /* Summary styled like a reel face: bright card, dark ink. */
-  .summary {
-    margin: 0 0 8px; padding: 18px 20px; border-radius: 14px; color: var(--ink);
-    border: 1.5px solid rgba(246, 242, 251, 0.9);
-    background: radial-gradient(ellipse 77% 97% at 50% 50%, #FFFFFF 0%, var(--reel-face) 62%, #CFC8DA 100%);
-  }
-  h2 { margin: 32px 0 6px; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent-light); }
-  p, ul { margin: 0 0 12px; color: rgba(246, 242, 251, 0.86); }
+  main { max-width: 680px; margin: 0 auto; padding: 48px 16px 64px; }
+  .back { margin: 0 0 32px; font-size: 15px; }
+  h1 { font-size: 32px; font-weight: 700; line-height: 1.2; margin: 0 0 4px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 36px 0 8px; }
+  .meta { color: var(--muted); margin: 0 0 24px; }
+  .summary { border-left: 3px solid var(--text); padding: 4px 0 4px 16px; margin: 24px 0; }
+  a { color: var(--text); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--text); }
   ul { padding-left: 20px; }
-  li + li { margin-top: 8px; }
-  strong { color: var(--text); font-weight: 600; }
-  .summary strong { color: var(--ink); }
-  .well a { color: var(--accent-light); text-decoration: none; border-bottom: 1px solid rgba(187, 166, 255, 0.4); }
-  .well a:hover { border-color: var(--accent-light); }
-
-  footer { margin-top: 40px; display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
+  li + li { margin-top: 6px; }
+  strong { font-weight: 600; }
+  footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; display: flex; gap: 20px; }
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--text); }
-
-  @media (max-width: 560px) {
-    .cabinet { padding: 7px; border-radius: 26px; }
-    .marquee { border-radius: 20px; }
-    h1 { font-size: 17px; }
-    .well { padding: 22px 18px 24px; border-radius: 20px; }
-  }
 </style>
 </head>
 <body>
-<nav class="back"><a href="../">← Food Slot Machine</a></nav>
+<main>
+  <p class="back"><a href="../">← Food Slot Machine</a></p>
+  <h1>Datenschutzerklärung</h1>
+  <p class="meta">Food Slot (iPhone-App und Webseite) · Stand: 17. November 2026</p>
 
-<main class="cabinet">
-  <header class="marquee">
-    <h1>Datenschutzerklärung</h1>
-    <p class="meta">Food Slot · Stand: 17. November 2026</p>
-  </header>
+  <p class="summary"><strong>Kurz gesagt:</strong> Food Slot erhebt keine personenbezogenen Daten. Die App hat kein Konto, keine Werbung, kein Tracking und sendet nichts an einen Server. Alles, was die App speichert, bleibt auf deinem iPhone.</p>
 
-  <div class="well">
-    <p class="summary"><strong>Kurz gesagt:</strong> Food Slot erhebt keine personenbezogenen Daten. Die App hat kein Konto, keine Werbung, kein Tracking und sendet nichts an einen Server. Alles, was die App speichert, bleibt auf deinem iPhone.</p>
+  <h2>Verantwortlicher</h2>
+  <p>Ferdinand Sorg<br>
+  E-Mail: <a href="mailto:foodslot@ferdinands.org">foodslot@ferdinands.org</a></p>
 
-    <h2>Verantwortlicher</h2>
-    <p>Ferdinand Sorg<br>
-    E-Mail: <a href="mailto:foodslot@ferdinands.org">foodslot@ferdinands.org</a></p>
+  <h2>Welche Daten die App verarbeitet</h2>
+  <p>Food Slot funktioniert vollständig offline. Die App verarbeitet nur Folgendes, und zwar ausschließlich auf deinem Gerät:</p>
+  <ul>
+    <li><strong>Einstellungen:</strong> ob Vibration (Haptik) und die Kippgeste eingeschaltet sind. Diese Werte werden lokal im App-Speicher deines iPhones abgelegt.</li>
+    <li><strong>Bewegungssensor:</strong> Wenn die Kippgeste eingeschaltet ist, liest die App die Bewegungsdaten deines iPhones, um zu erkennen, dass du es kurz nach vorne kippst. Die Daten werden nur in diesem Moment ausgewertet, nicht gespeichert und nicht weitergegeben. iOS fragt dich vorher um Erlaubnis; du kannst sie jederzeit in den iPhone-Einstellungen oder in der App abschalten.</li>
+  </ul>
+  <p>Diese lokalen Daten verlassen dein Gerät nicht. Wenn du die App löschst, werden sie mitgelöscht.</p>
 
-    <h2>Welche Daten die App verarbeitet</h2>
-    <p>Food Slot funktioniert vollständig offline. Die App verarbeitet nur Folgendes, und zwar ausschließlich auf deinem Gerät:</p>
-    <ul>
-      <li><strong>Einstellungen:</strong> ob Vibration (Haptik) und die Kippgeste eingeschaltet sind. Diese Werte werden lokal im App-Speicher deines iPhones abgelegt.</li>
-      <li><strong>Bewegungssensor:</strong> Wenn die Kippgeste eingeschaltet ist, liest die App die Bewegungsdaten deines iPhones, um zu erkennen, dass du es kurz nach vorne kippst. Die Daten werden nur in diesem Moment ausgewertet, nicht gespeichert und nicht weitergegeben. iOS fragt dich vorher um Erlaubnis; du kannst sie jederzeit in den iPhone-Einstellungen oder in der App abschalten.</li>
-    </ul>
-    <p>Diese lokalen Daten verlassen dein Gerät nicht. Wenn du die App löschst, werden sie mitgelöscht.</p>
+  <h2>Keine Weitergabe, kein Tracking</h2>
+  <p>Food Slot enthält keine Analyse-, Werbe- oder Tracking-Dienste und keine Dienste Dritter, die Daten über dich erheben. Es findet keine Übermittlung an Server statt – weder an uns noch an Dritte.</p>
 
-    <h2>Keine Weitergabe, kein Tracking</h2>
-    <p>Food Slot enthält keine Analyse-, Werbe- oder Tracking-Dienste und keine Dienste Dritter, die Daten über dich erheben. Es findet keine Übermittlung an Server statt – weder an uns noch an Dritte.</p>
+  <h2>App Store, TestFlight und Absturzberichte</h2>
+  <p>Für den Download und die Installation der App ist Apple zuständig. Welche Daten Apple dabei verarbeitet, regelt die <a href="https://www.apple.com/de/legal/privacy/">Datenschutzrichtlinie von Apple</a>.</p>
+  <p>Wenn du in den iPhone-Einstellungen zugestimmt hast, Analysedaten mit App-Entwicklern zu teilen, stellt Apple uns anonymisierte Absturzberichte und Nutzungsstatistiken zur Verfügung. Diese enthalten keine Angaben, mit denen wir dich identifizieren können. Wenn du über TestFlight testest, sieht der Entwickler das Feedback und die Screenshots, die du selbst über TestFlight sendest.</p>
 
-    <h2>App Store, TestFlight und Absturzberichte</h2>
-    <p>Für den Download und die Installation der App ist Apple zuständig. Welche Daten Apple dabei verarbeitet, regelt die <a href="https://www.apple.com/de/legal/privacy/">Datenschutzrichtlinie von Apple</a>.</p>
-    <p>Wenn du in den iPhone-Einstellungen zugestimmt hast, Analysedaten mit App-Entwicklern zu teilen, stellt Apple uns anonymisierte Absturzberichte und Nutzungsstatistiken zur Verfügung. Diese enthalten keine Angaben, mit denen wir dich identifizieren können. Wenn du über TestFlight testest, sieht der Entwickler das Feedback und die Screenshots, die du selbst über TestFlight sendest.</p>
+  <h2>Diese Webseite</h2>
+  <p>Diese Seite setzt keine Cookies und bindet keine Analyse- oder Tracking-Dienste ein; Schrift und Bilder werden vom eigenen Server geladen. Beim Aufruf speichert der Webserver technisch notwendige Zugriffsdaten (z. B. IP-Adresse, Zeitpunkt, aufgerufene Seite) in Protokolldateien, um den sicheren Betrieb zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO). Diese Daten werden nicht mit anderen Daten zusammengeführt und nach kurzer Zeit gelöscht.</p>
 
-    <h2>Diese Webseite</h2>
-    <p>Diese Seite setzt keine Cookies und bindet keine Analyse- oder Tracking-Dienste ein; Schrift und Bilder werden vom eigenen Server geladen. Beim Aufruf speichert der Webserver technisch notwendige Zugriffsdaten (z. B. IP-Adresse, Zeitpunkt, aufgerufene Seite) in Protokolldateien, um den sicheren Betrieb zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO). Diese Daten werden nicht mit anderen Daten zusammengeführt und nach kurzer Zeit gelöscht.</p>
+  <h2>Deine Rechte</h2>
+  <p>Nach der Datenschutz-Grundverordnung (DSGVO) hast du das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Da Food Slot keine personenbezogenen Daten an uns übermittelt, liegen uns in der Regel keine Daten über dich vor. Bei Fragen schreib uns gern an die oben genannte Adresse.</p>
 
-    <h2>Deine Rechte</h2>
-    <p>Nach der Datenschutz-Grundverordnung (DSGVO) hast du das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch sowie das Recht, dich bei einer Datenschutz-Aufsichtsbehörde zu beschweren. Da Food Slot keine personenbezogenen Daten an uns übermittelt, liegen uns in der Regel keine Daten über dich vor. Bei Fragen schreib uns gern an die oben genannte Adresse.</p>
+  <h2>Änderungen</h2>
+  <p>Wenn sich die App oder diese Seite so ändert, dass andere Daten verarbeitet werden, passen wir diese Erklärung an. Das Datum oben zeigt den aktuellen Stand.</p>
 
-    <h2>Änderungen</h2>
-    <p>Wenn sich die App oder diese Seite so ändert, dass andere Daten verarbeitet werden, passen wir diese Erklärung an. Das Datum oben zeigt den aktuellen Stand.</p>
-  </div>
+  <footer><a href="https://ferdinands.org">© 2026 Ferdinand Sorg</a><a href="../">Food Slot Machine</a></footer>
 </main>
-
-<footer><a href="https://ferdinands.org">© 2026 Ferdinand Sorg</a><a href="../">Food Slot Machine</a></footer>
 </body>
 </html>
