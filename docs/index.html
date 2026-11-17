@@ -14,8 +14,13 @@
     --accent: #8B5CF6; --accent-light: #BBA6FF;
     --text: #F6F2FB; --muted: rgba(246, 242, 251, 0.66); --ink: #1D1826;
     --inset: #15101D; --reel-face: #F2EEF7;
-    --reel-h: 148px;
+    /* Machine width: 420px, shrinking with the viewport (16px gutters) and on short screens.
+       Every inner size is a multiple of --u, so the whole machine scales as one piece. */
+    --w: max(260px, min(420px, calc(100vw - 32px), calc((100vh - 330px) * 1.25)));
+    --u: calc(var(--w) / 420);
+    --reel-h: calc(var(--u) * 196);
   }
+  @supports (height: 100svh) { :root { --w: max(260px, min(420px, calc(100vw - 32px), calc((100svh - 330px) * 1.25))); } }
   * { box-sizing: border-box; }
   html, body { margin: 0; min-height: 100%; }
   body {
@@ -34,23 +39,23 @@
 
   /* Cabinet: rounded lilac metal block lit from above. */
   .cabinet {
-    width: min(320px, 100%); padding: 7px; border-radius: 26px; cursor: pointer;
+    width: var(--w); padding: calc(var(--u) * 9); border-radius: calc(var(--u) * 32); cursor: pointer;
     background: linear-gradient(to bottom, #F3EFF8 0%, #CFC7DC 22%, #A79DBA 60%, #7D7393 100%);
     box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 60px rgba(14, 9, 22, 0.55), 0 0 0 0 rgba(139, 92, 246, 0);
     transition: box-shadow 0.5s ease;
   }
   .cabinet.glow { box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 24px 60px rgba(14, 9, 22, 0.55), 0 0 0 3px rgba(187, 166, 255, 0.9), 0 0 48px 6px rgba(139, 92, 246, 0.55); }
   .marquee {
-    height: 50px; border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    height: calc(var(--u) * 64); border-radius: calc(var(--u) * 25); display: flex; align-items: center; justify-content: center;
     background: linear-gradient(to bottom, #3A2F4C 0%, #2A2138 55%, #1C1526 100%);
     box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset;
-    font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: 0;
+    font-size: calc(var(--u) * 22); font-weight: 700; text-transform: uppercase; letter-spacing: 0;
   }
-  .well { margin-top: 6px; padding: 10px 6px 6px; border-radius: 20px; background: var(--inset); }
-  .labels, .reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
-  .labels span { text-align: center; font-size: 7.5px; font-weight: 700; letter-spacing: 0.9px; text-transform: uppercase; color: var(--muted); padding-bottom: 7px; }
+  .well { margin-top: calc(var(--u) * 8); padding: calc(var(--u) * 13) calc(var(--u) * 8) calc(var(--u) * 8); border-radius: calc(var(--u) * 25); background: var(--inset); }
+  .labels, .reels { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 7); }
+  .labels span { text-align: center; font-size: calc(var(--u) * 10); font-weight: 700; letter-spacing: calc(var(--u) * 1.2); text-transform: uppercase; color: var(--muted); padding-bottom: calc(var(--u) * 9); }
   .reel {
-    position: relative; height: var(--reel-h); overflow: hidden; border-radius: 11px;
+    position: relative; height: var(--reel-h); overflow: hidden; border-radius: calc(var(--u) * 14);
     border: 1.5px solid rgba(246, 242, 251, 0.9);
     background: radial-gradient(ellipse 77% 97% at 50% 50%, #FFFFFF 0%, var(--reel-face) 62%, #CFC8DA 100%);
   }
@@ -60,10 +65,10 @@
     background: linear-gradient(to bottom, rgba(21,16,29,0.7) 0%, rgba(21,16,29,0.25) 20%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.05) 60%, rgba(21,16,29,0.25) 80%, rgba(21,16,29,0.7) 100%);
   }
   .strip { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
-  .item { height: var(--reel-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
-  .item img, .item .emoji { width: 58px; height: 58px; object-fit: contain; }
-  .item .emoji { font-size: 44px; line-height: 58px; text-align: center; }
-  .item span { font-size: 11px; font-weight: 700; color: var(--ink); text-align: center; padding: 0 4px; }
+  .item { height: var(--reel-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 10); }
+  .item img, .item .emoji { width: calc(var(--u) * 78); height: calc(var(--u) * 78); object-fit: contain; }
+  .item .emoji { font-size: calc(var(--u) * 58); line-height: calc(var(--u) * 78); text-align: center; }
+  .item span { font-size: calc(var(--u) * 14); font-weight: 700; color: var(--ink); text-align: center; padding: 0 4px; }
   .spinning .item img { filter: blur(0.8px); }
   .reel.pop { animation: pop 0.32s ease-out; }
   @keyframes pop { 50% { transform: scale(1.04); } }
@@ -87,20 +92,6 @@
   footer { margin-top: 40px; display: flex; gap: 20px; font-size: 13px; color: var(--muted); }
   footer a { color: var(--muted); text-decoration: none; }
   footer a:hover { color: var(--text); }
-  /* Bigger machine on larger screens. */
-  @media (min-width: 700px) and (min-height: 760px) {
-    :root { --reel-h: 196px; }
-    .cabinet { width: 420px; padding: 9px; border-radius: 32px; }
-    .marquee { height: 64px; border-radius: 25px; font-size: 22px; }
-    .well { margin-top: 8px; padding: 13px 8px 8px; border-radius: 25px; }
-    .labels, .reels { gap: 7px; }
-    .labels span { font-size: 10px; letter-spacing: 1.2px; padding-bottom: 9px; }
-    .reel { border-radius: 14px; }
-    .item { gap: 10px; }
-    .item img, .item .emoji { width: 78px; height: 78px; }
-    .item .emoji { font-size: 58px; line-height: 78px; }
-    .item span { font-size: 14px; }
-  }
   @media (prefers-reduced-motion: reduce) { .cabinet, .reel.pop { transition: none; animation: none; } }
 </style>
 </head>
