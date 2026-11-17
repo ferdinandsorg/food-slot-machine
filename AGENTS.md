@@ -26,6 +26,7 @@ Playful iPhone app: spin three slots (protein, carbs, fiber) into a spontaneous 
 1. **Scaffold** Expo Router + TypeScript app; keep native dirs generated (no hand-edited `ios/` / `android/`).
 2. **Separate layers**: screens in `app/`, spin selection/state in `src/features/spin/`, sensors in `src/sensors/`, food catalog in `src/data/` + `data/foods.csv`.
 3. **Food catalog**: edit CSV → `npm run data:foods` → add PNG under `assets/foods/{imageKey}.png` → register `require()` in `src/data/foodImages.ts`.
+   - **Fit**: `data/avoid-pairs.csv` vetoes pairs (status empty = unjudged, `bestätigt`, `erlaubt` = ignored). `pickMeal` redraws until `mealFits` (only outliers are filtered, by owner's choice — don't turn this into weighting without asking). Legumes stay on the protein reel (convention for plant protein, owner's call). Tried and dropped: cuisine tags and a deftig/frisch rule — the owner approved most of what they excluded. Owner judges pairs in `npm run data:review` (localhost:4321); check with `npm run data:report`.
 4. **Interaction**: three reels (real strip animation) + spin-all with per-slot hold/lock; DeviceMotion forward-thrust with settings toggle; button always available.
 5. **Ship to phone via Expo Go**: LAN on the same Wi‑Fi locally; **tunnel** from a cloud VM (`npm run start:tunnel`).
 6. **SDK alignment**: when Expo Go on the phone reports a different SDK, upgrade/downgrade the project with `npx expo install` so versions match — do not invent peer versions by hand.
@@ -93,7 +94,9 @@ npm run start:tunnel      # Cloud / different network → Expo Go
 npm run start:localhost   # this machine only
 npm run typecheck
 npm run test:spin
-npm run data:foods        # regenerate foods.json from CSV
+npm run data:foods        # regenerate foods.json + avoidPairs.json from CSV
+npm run data:report       # which meals fit, per-food share, samples
+npm run data:review       # swipe tool for avoid pairs → data/avoid-pairs.csv
 npx expo install <pkg>    # ALWAYS for Expo deps (SDK-compatible versions)
 npx expo-doctor
 npx expo install --fix
@@ -130,3 +133,11 @@ Figma file: https://www.figma.com/design/wZzGlIahw1eaLyipDJ1F63/Food-Slot-Machin
 - Code → Figma only for **structure** (new components/screens), and only on nodes the agent created. Never edit frames the owner made, never overwrite a variable value without reading it first and asking if it differs from code.
 - Fonts: Uncut Sans (body, `assets/fonts/UncutSans-Variable.ttf`, OFL) for everything incl. headlines, with stylistic set ss02 (alternate Y/y) via `fontVariant: ["stylistic-two"]`. The Figma plugin API cannot load Uncut Sans, so text nodes using it can't be edited by agents — leave copy edits to the owner.
 - Icons: Apple SF Symbols via `expo-symbols`, wrapped in `src/components/SFIcon.tsx` (Material fallback on Android/web). Add new icons to the map there.
+
+## EAS / TestFlight (linked)
+
+- Project is now linked to EAS: `owner: uppercasef`, `extra.eas.projectId` in `app.json` (https://expo.dev/accounts/uppercasef/projects/food-slot-machine). Expo Go and the CLI must both be signed in as `uppercasef`.
+- `eas.json`: `production` (store build, remote build number, auto-increment) and `preview` (internal ad-hoc).
+- Ship to TestFlight: `npx eas-cli build -p ios --profile production --auto-submit` (Apple login + 2FA is interactive — the owner does this in a terminal).
+- `ios.config.usesNonExemptEncryption: false` skips the export-compliance question.
+- App icon `assets/images/icon.png` (1024px, no alpha) is exported from Figma v2 frame "App Icon (Vorlage)"; `splash-icon.png` is the same art with rounded corners on #1E1729.

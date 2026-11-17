@@ -1,0 +1,26 @@
+a,b,reason,status
+lentils,peas,zweimal Hülsenfrucht,bestätigt
+chickpeas,peas,zweimal Hülsenfrucht,erlaubt
+beans,peas,zweimal Hülsenfrucht,bestätigt
+edamame,peas,zweimal grüne Hülsenfrucht,bestätigt
+edamame,spinach,Edamame wirkt wie eine zweite Gemüsebeilage,erlaubt
+edamame,kale,Edamame zu deftigem Kohl,erlaubt
+edamame,brussels_sprouts,Edamame zu deftigem Kohl,erlaubt
+edamame,savoy_cabbage,Edamame zu deftigem Kohl,erlaubt
+edamame,leek,Edamame wirkt wie eine zweite Gemüsebeilage,erlaubt
+edamame,lambs_lettuce,Edamame wirkt wie eine zweite Gemüsebeilage,erlaubt
+edamame,chard,Edamame wirkt wie eine zweite Gemüsebeilage,erlaubt
+edamame,parsnip,Edamame zu Wurzelgemüse,erlaubt
+edamame,celery,Edamame zu Wurzelgemüse,erlaubt
+edamame,fennel,Edamame wirkt wie eine zweite Gemüsebeilage,erlaubt
+lentils,asparagus,Linsen überdecken zarten Spargel,erlaubt
+lentils,avocado,Linsen und Avocado sind beide weich und erdig,erlaubt
+chickpeas,asparagus,Kichererbsen überdecken zarten Spargel,erlaubt
+beans,asparagus,Bohnen überdecken zarten Spargel,erlaubt
+beans,kohlrabi,Bohnen und Kohlrabi finden kein gemeinsames Gericht,erlaubt
+beans,fennel,Bohnen und Fenchel finden kein gemeinsames Gericht,erlaubt
+soy_granules,asparagus,Hack-Ersatz zu zartem Spargel,erlaubt
+soy_granules,lambs_lettuce,Hack-Ersatz zu Blattsalat,erlaubt
+soy_chunks,lambs_lettuce,Gulasch-Ersatz zu Blattsalat,erlaubt
+dumplings,avocado,Knödel und Avocado finden kein gemeinsames Gericht,bestätigt
+spaetzle,avocado,Spätzle und Avocado finden kein gemeinsames Gericht,erlaubt

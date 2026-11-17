@@ -12,6 +12,9 @@
       "bundleIdentifier": "org.ferdinands.foodslot",
       "infoPlist": {
         "NSMotionUsageDescription": "Food Slot nutzt Bewegungsdaten, damit du die Slots mit einem Vorwärtsschub starten kannst."
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -34,8 +37,9 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
+          "imageWidth": 180,
           "resizeMode": "contain",
-          "backgroundColor": "#0F1A14"
+          "backgroundColor": "#1E1729"
         }
       ],
       [
@@ -50,6 +54,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "owner": "uppercasef",
+    "extra": {
+      "eas": {
+        "projectId": "074554b7-3bfe-4195-ae61-8e775d0abb07"
+      }
     }
   }
 }

@@ -11,6 +11,9 @@ export type Food = {
   enabled: boolean;
 };
 
+/** Pairs of food ids that never land together (data/avoid-pairs.csv). */
+export type AvoidPair = [string, string];
+
 export type MealCombination = Record<FoodCategory, Food>;
 
 export const CATEGORY_LABELS: Record<FoodCategory, string> = {

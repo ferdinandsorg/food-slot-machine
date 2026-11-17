@@ -1,0 +1,25 @@
+{
+  "cli": {
+    "version": ">= 26.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6827292049",
+        "appleTeamId": "TG59HT53UM",
+        "ascApiKeyPath": "/Users/ferdinandsorg/Google Drive/Work/# Buchhaltung/Apple/AuthKey_9L77NDFU6N.p8",
+        "ascApiKeyIssuerId": "be88f4eb-eb9c-46c5-be25-edddd040d294",
+        "ascApiKeyId": "9L77NDFU6N"
+      }
+    }
+  }
+}

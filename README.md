@@ -122,11 +122,19 @@ npm run typecheck
 - Respects iOS Reduce Motion; vibration toggle in Settings
 - Forward-thrust gesture (toggle in Settings) + always-on button
 - Motion debug screen for threshold tuning
-- Vegetarian catalog (55 foods: 15 carbs, 16 protein, 24 fiber)
+- Vegetarian catalog (55 foods: 15 carbs, 16 protein, 24 fiber; legumes count as protein, the usual convention for plant protein sources)
 
 ## Adding a food
 
 1. Add a row to `data/foods.csv` (optional `emoji` = fallback)
-2. Run `npm run data:foods`
+2. Run `npm run data:foods`, then `npm run data:report` to see how often it can show up
 3. Image: find the item in [Ingredient Atlas](https://github.com/ionmesca/ingredient-atlas) (CC0), download its 512px WebP into `assets/foods/atlas/<image_key>.webp`, run `scripts/atlas-cutout.py` (needs `rembg[cpu]` + Pillow) to cut it out without shadow, add the slug to `assets/foods/atlas/SOURCE.tsv` and a `require()` in `src/data/foodImages.ts`
 4. Display order: atlas image → emoji → grey SF Symbol placeholder
+
+## Which foods fit together
+
+The machine only filters out outliers; every fitting meal stays equally likely.
+
+- `data/avoid-pairs.csv` (`a,b,reason,status`): pairs that shouldn't land together, e.g. edamame + peas. A meal is dropped if any of its three pairs is listed (`src/features/spin/compatibility.ts`).
+- `npm run data:review` opens a swipe tool at http://localhost:4321 that shows each unjudged pair in a sample meal. ✓ sets `status` to `erlaubt` (pair is fine after all), ✕ to `bestätigt`; both are written straight into the CSV and `src/data/avoidPairs.json`. Add new pairs with an empty status, then restart the tool.
+- `npm run data:report` prints how many meals pass, each food's share (⚠ below 20 %) and samples to read through.

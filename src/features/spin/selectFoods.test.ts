@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict';
+import { getFoodById } from '@/src/data/loadFoods';
+import type { MealCombination } from '@/src/data/types';
+import { mealFits, pairFits } from './compatibility';
 import { pickFood, pickMeal } from './selectFoods';
+
+function describe(meal: MealCombination): string {
+  return `${meal.carbs.name} + ${meal.protein.name} + ${meal.fiber.name}`;
+}
 
 function run() {
   const meal = pickMeal();
@@ -25,6 +32,29 @@ function run() {
 
   const carbs = pickFood('carbs');
   assert.equal(carbs.category, 'carbs');
+
+  // Only fitting meals come out — free spins and spins around held reels.
+  let last = meal;
+  for (let i = 0; i < 1000; i++) {
+    last = pickMeal(last);
+    assert.ok(mealFits(last), `unpassend: ${describe(last)}`);
+  }
+
+  const knoedel = getFoodById('dumplings')!;
+  const edamame = getFoodById('edamame')!;
+  const narrow = { ...meal, carbs: knoedel, protein: edamame };
+  for (let i = 0; i < 200; i++) {
+    const oneHeld = pickMeal(narrow, { carbs: true });
+    assert.equal(oneHeld.carbs.id, 'dumplings');
+    assert.ok(mealFits(oneHeld), `unpassend: ${describe(oneHeld)}`);
+
+    const twoHeld = pickMeal(narrow, { carbs: true, protein: true });
+    assert.equal(twoHeld.protein.id, 'edamame');
+    assert.ok(mealFits(twoHeld), `unpassend: ${describe(twoHeld)}`);
+  }
+
+  assert.equal(pairFits(edamame, getFoodById('peas')!), false, 'avoid list');
+  assert.equal(pairFits(getFoodById('skyr')!, knoedel), true, 'not on the list');
 
   console.log('selectFoods.test.ts: ok');
 }
