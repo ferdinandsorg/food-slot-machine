@@ -31,6 +31,8 @@
     --w: max(260px, min(420px, calc(100vw - 32px), calc((100vh - 330px) * 1.25)));
     --u: calc(var(--w) / 420);
     --reel-h: calc(var(--u) * 196);
+    /* Strip pitch is a bit taller than the window (iOS: 244 / 231), so neighbours stay hidden. */
+    --pitch: calc(var(--reel-h) * 244 / 231);
   }
   @supports (height: 100svh) { :root { --w: max(260px, min(420px, calc(100vw - 32px), calc((100svh - 330px) * 1.25))); } }
   * { box-sizing: border-box; }
@@ -77,13 +79,14 @@
     background: linear-gradient(to bottom, rgba(21,16,29,0.7) 0%, rgba(21,16,29,0.25) 20%, rgba(255,255,255,0.05) 40%, rgba(255,255,255,0.05) 60%, rgba(21,16,29,0.25) 80%, rgba(21,16,29,0.7) 100%);
   }
   .strip { position: absolute; left: 0; right: 0; top: 0; will-change: transform; }
-  .item { height: var(--reel-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 10); }
+  .item { height: var(--pitch); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 10); }
   .item img, .item .emoji { width: calc(var(--u) * 78); height: calc(var(--u) * 78); object-fit: contain; }
   .item .emoji { font-size: calc(var(--u) * 58); line-height: calc(var(--u) * 78); text-align: center; }
   .item span { font-size: calc(var(--u) * 14); font-weight: 700; color: var(--ink); text-align: center; padding: 0 4px; }
-  .spinning .item img { filter: blur(0.8px); }
-  .reel.pop { animation: pop 0.32s ease-out; }
-  @keyframes pop { 50% { transform: scale(1.04); } }
+  /* Veil that fades in at full speed, like the iOS reel: reads as motion blur. */
+  .veil { position: absolute; inset: 0; pointer-events: none; opacity: 0; background: var(--reel-face); }
+  .reel.pop { animation: pop 0.43s cubic-bezier(0.2, 0.7, 0.3, 1); }
+  @keyframes pop { 30% { transform: scale(1.04); } 100% { transform: scale(1); } }
 
   .hint { margin: -12px 0 0; font-size: 13px; color: var(--muted); text-align: center; }
   .hint kbd { font: inherit; font-weight: 600; color: var(--text); padding: 1px 7px; border-radius: 6px; border: 1px solid rgba(246,242,251,0.35); }
@@ -114,9 +117,9 @@
     <div class="well">
       <div class="labels"><span>Kohlenhydrate</span><span>Protein</span><span>Ballaststoffe</span></div>
       <div class="reels">
-        <div class="reel" data-category="carbs"><div class="strip"></div></div>
-        <div class="reel" data-category="protein"><div class="strip"></div></div>
-        <div class="reel" data-category="fiber"><div class="strip"></div></div>
+        <div class="reel" data-category="carbs"><div class="strip"></div><div class="veil"></div></div>
+        <div class="reel" data-category="protein"><div class="strip"></div><div class="veil"></div></div>
+        <div class="reel" data-category="fiber"><div class="strip"></div><div class="veil"></div></div>
       </div>
     </div>
   </div>
@@ -141,7 +144,6 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const reels = [...document.querySelectorAll('.reel')];
   const machine = document.getElementById('machine');
-  const reelHeight = () => reels[0].clientHeight;
 
   if (matchMedia('(hover: none)').matches) {
     document.getElementById('hint').textContent = 'Tippen für eine neue Kombination';
@@ -166,53 +168,93 @@
   const itemHtml = (f) =>
     `<div class="item">${f.image ? `<img src="${f.image}" alt="">` : `<div class="emoji">${f.emoji ?? '🍽️'}</div>`}<span>${f.name}</span></div>`;
 
+  // Same motion as the iOS reel (src/components/SlotReel.tsx + spinTiming.ts):
+  // pull back, run with quad ease-out past the payline, settle back onto it.
+  const BASE_MS = 1100, STAGGER_MS = 450;     // reel n stops after BASE + n * STAGGER
+  const BASE_TRAVEL = 8, TRAVEL_STEP = 4;     // and passes at least 8, 12, 16 foods
+  const WINDUP_MS = 140, SETTLE_MS = 220;
+  const WINDUP = 0.3, OVERSHOOT = 0.18;       // in foods
+  const VEIL_FROM = 8, VEIL_TO = 26, VEIL_MAX = 0.6; // foods per second → veil opacity
+  const POP_STAGGER_MS = 90;
+
+  const easeInOutQuad = (t) => (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t));
+  const easeOutQuad = (t) => 1 - (1 - t) * (1 - t);
+
   let current = null;
   let spinning = false;
 
-  function spin() {
+  /** Position (in foods) at time t ms for a reel that travels `travel` foods in `total` ms. */
+  function positionAt(t, travel, total) {
+    const runMs = Math.max(300, total - WINDUP_MS - SETTLE_MS);
+    if (t < WINDUP_MS) return -WINDUP * easeInOutQuad(t / WINDUP_MS);
+    t -= WINDUP_MS;
+    if (t < runMs) return -WINDUP + (travel + OVERSHOOT + WINDUP) * easeOutQuad(t / runMs);
+    t -= runMs;
+    return travel + OVERSHOOT - OVERSHOOT * easeOutQuad(Math.min(1, t / SETTLE_MS));
+  }
+
+  function place(reel, pos) {
+    const strip = reel.querySelector('.strip');
+    const pitch = strip.firstElementChild.offsetHeight;
+    const offset = (reel.clientHeight - pitch) / 2;
+    // Index 0 in the strip is one buffer food above the start (for the pull-back).
+    strip.style.transform = `translate3d(0, ${offset - (pos + 1) * pitch}px, 0)`;
+  }
+
+  function show(reel, food) {
+    reel.querySelector('.strip').innerHTML = itemHtml(pick(byCategory[reel.dataset.category], food)) + itemHtml(food);
+    place(reel, 0);
+  }
+
+  function runReel(reel, n, from, to) {
+    return new Promise((resolve) => {
+      const list = byCategory[SLOTS[n]];
+      const travel = BASE_TRAVEL + n * TRAVEL_STEP;
+      const total = BASE_MS + n * STAGGER_MS;
+      const items = [pick(list, from), from];
+      for (let i = 1; i < travel; i++) items.push(pick(list, items[items.length - 1]));
+      items.push(to, pick(list, to));
+      const strip = reel.querySelector('.strip');
+      strip.innerHTML = items.map(itemHtml).join('');
+      const veil = reel.querySelector('.veil');
+
+      const start = performance.now();
+      let lastPos = 0, lastT = start;
+      const frame = (now) => {
+        const t = now - start;
+        const pos = positionAt(t, travel, total);
+        place(reel, pos);
+        const dt = Math.max(1, now - lastT);
+        const speed = (Math.abs(pos - lastPos) / dt) * 1000;
+        veil.style.opacity = Math.min(1, Math.max(0, (speed - VEIL_FROM) / (VEIL_TO - VEIL_FROM))) * VEIL_MAX;
+        lastPos = pos; lastT = now;
+        if (t < total) return requestAnimationFrame(frame);
+        veil.style.opacity = 0;
+        show(reel, to); // same food at the same spot: no visible jump
+        resolve();
+      };
+      requestAnimationFrame(frame);
+    });
+  }
+
+  async function spin() {
     if (spinning) return;
     spinning = true;
     machine.classList.remove('glow');
     const next = pickMeal(current);
-    const h = reelHeight();
-    let done = 0;
-
+    if (reduced) {
+      reels.forEach((reel, n) => show(reel, next[n]));
+    } else {
+      await Promise.all(reels.map((reel, n) => runReel(reel, n, current?.[n] ?? pick(byCategory[SLOTS[n]]), next[n])));
+    }
+    current = next;
     reels.forEach((reel, n) => {
-      const strip = reel.querySelector('.strip');
-      const list = byCategory[SLOTS[n]];
-      const filler = reduced ? 0 : 10 + n * 5;
-      const items = [current?.[n] ?? pick(list)];
-      for (let i = 0; i < filler; i++) items.push(pick(list, items[items.length - 1]));
-      items.push(next[n]);
-
-      // Reels run downward: the new food comes in from the top.
-      items.reverse();
-      strip.innerHTML = items.map(itemHtml).join('');
-      strip.style.transition = 'none';
-      strip.style.transform = `translateY(${-(items.length - 1) * h}px)`;
-      void strip.offsetHeight;
-
-      const duration = reduced ? 0 : 1050 + n * 320;
-      strip.style.transition = `transform ${duration}ms cubic-bezier(0.15, 0.62, 0.22, 1.02)`;
-      strip.style.transform = 'translateY(0)';
-      reel.classList.toggle('spinning', !reduced);
-
-      const settle = () => {
-        reel.classList.remove('spinning');
-        strip.innerHTML = itemHtml(next[n]);
-        strip.style.transition = 'none';
-        strip.style.transform = 'translateY(0)';
-        reel.classList.remove('pop'); void reel.offsetWidth;
-        setTimeout(() => reel.classList.add('pop'), n * 90);
-        if (++done === reels.length) {
-          current = next;
-          spinning = false;
-          machine.classList.add('glow');
-          setTimeout(() => machine.classList.remove('glow'), 1100);
-        }
-      };
-      if (duration === 0) settle(); else setTimeout(settle, duration + 20);
+      reel.classList.remove('pop'); void reel.offsetWidth;
+      setTimeout(() => reel.classList.add('pop'), n * POP_STAGGER_MS);
     });
+    machine.classList.add('glow');
+    setTimeout(() => machine.classList.remove('glow'), 1100);
+    spinning = false;
   }
 
   document.addEventListener('keydown', (e) => {
@@ -224,7 +266,9 @@
   // Start with a spin once the images are cached.
   Promise.all(foods.filter((f) => f.image).map((f) => new Promise((r) => { const i = new Image(); i.onload = i.onerror = r; i.src = f.image; })))
     .then(() => setTimeout(spin, 250));
-  reels.forEach((reel, n) => { reel.querySelector('.strip').innerHTML = itemHtml(byCategory[SLOTS[n]][0]); });
+  current = SLOTS.map((c) => byCategory[c][0]);
+  reels.forEach((reel, n) => show(reel, current[n]));
+  addEventListener('resize', () => { if (!spinning) reels.forEach((reel, n) => place(reel, 0)); });
 </script>
 </body>
 </html>
