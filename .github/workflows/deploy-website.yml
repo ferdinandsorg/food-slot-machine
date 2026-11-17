@@ -1,0 +1,35 @@
+# Uploads docs/ (landing page + privacy policy) to the Food Slot folder on the web server.
+# Runs on every push to main that touches docs/, or by hand from the Actions tab.
+# The FTP account is scoped to the Food Slot folder, so server-dir is its root.
+name: Deploy website
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**']
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only connect and list what would change, upload nothing'
+        type: boolean
+        default: true
+
+concurrency:
+  group: deploy-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Upload docs/ via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./docs/
+          server-dir: ./
+          dry-run: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
